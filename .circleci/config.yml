@@ -1,0 +1,26 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.2-cli
+    steps:
+      - checkout
+      - run: sudo composer self-update
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "composer.json" }}
+            - v1-dependencies-
+      - run: composer install -n --prefer-dist
+      - save_cache:
+          key: v1-dependencies-{{ checksum "composer.json" }}
+          paths:
+            - ./vendor
+      - run:
+          name: Run Unit Tests
+          command: vendor/bin/phpunit
+workflows:
+  Setup:
+    jobs:
+      - build
+  version: 2
