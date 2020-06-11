@@ -7,6 +7,10 @@ use Pinoven\Dispatcher\Provider\AggregatorProviderInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 
 
+/**
+ * Class EventDispatcher
+ * @package Pinoven\Dispatcher\Dispatch
+ */
 class EventDispatcher implements EventDispatcherInterface
 {
     /** @var AggregatorProviderInterface */
