@@ -1,0 +1,34 @@
+{
+  "name": "pinoven/dispatcher",
+  "description": "A PSR events standard implementation in the oven.",
+  "minimum-stability": "stable",
+  "type": "library",
+  "keywords": ["psr", "psr-14", "events"],
+  "license": ["MIT"],
+  "authors": [
+    {
+      "name": "Raphael Bergina(rbergDrox)",
+      "email": "pinoven@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">= 7.2.0",
+    "psr/event-dispatcher": "^1.0",
+    "fig/event-dispatcher-util": "1.1.0",
+    "psr/container": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.0",
+    "pimple/pimple" : "~3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Pinoven\\Dispatcher\\": ["src/"]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Pinoven\\Dispatcher\\": ["src/", "tests/"]
+    }
+  }
+}
