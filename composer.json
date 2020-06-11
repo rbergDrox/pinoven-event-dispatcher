@@ -1,5 +1,5 @@
 {
-  "name": "pinoven/dispatcher",
+  "name": "pinoven/event-dispatcher",
   "description": "A PSR events standard implementation in the oven.",
   "minimum-stability": "stable",
   "type": "library",
