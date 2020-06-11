@@ -3,11 +3,11 @@
 
 namespace Pinoven\Dispatcher\Dispatch;
 
-
 use Pinoven\Dispatcher\Provider\AggregatorProviderInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 
-class Dispatcher implements EventDispatcherInterface
+
+class EventDispatcher implements EventDispatcherInterface
 {
     /** @var AggregatorProviderInterface */
     private $aggregator;
@@ -45,5 +45,4 @@ class Dispatcher implements EventDispatcherInterface
         $this->aggregator = $aggregator;
         return $this;
     }
-
 }

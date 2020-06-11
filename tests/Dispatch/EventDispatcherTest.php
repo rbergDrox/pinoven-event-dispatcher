@@ -19,10 +19,10 @@ use Pinoven\Dispatcher\Samples\EventSampleB;
 use Pinoven\Dispatcher\Samples\ListenerSampleA;
 
 /**
- * Class DispatcherTest
+ * Class EventDispatcherTest
  * @package Pinoven\Dispatcher\Dispatch
  */
-class DispatcherTest extends TestCase
+class EventDispatcherTest extends TestCase
 {
 
     /**
@@ -30,7 +30,7 @@ class DispatcherTest extends TestCase
      */
     private $providerAggregatorB;
     /**
-     * @var Dispatcher
+     * @var EventDispatcher
      */
     private $dispatcher;
     /**
@@ -61,7 +61,7 @@ class DispatcherTest extends TestCase
         $this->providerAggregatorB = new ProviderAggregatorProvider();
         $this->providerAggregatorB->subscribeProvider($delegatingTypeB);
         $providerAggregatorA->subscribeProvider($delegatingTypeA);
-        $this->dispatcher = new Dispatcher($providerAggregatorA);
+        $this->dispatcher = new EventDispatcher($providerAggregatorA);
     }
 
     public function testDispatch()
@@ -92,7 +92,7 @@ class DispatcherTest extends TestCase
         $delegateProvider->subscribeEventTypeMapper(new EventMapperProviderSampleE($this->proxy));
         $providerAggregator = new ProviderAggregatorProvider();
         $providerAggregator->subscribeProvider($delegateProvider);
-        $dispatcher = new Dispatcher($providerAggregator);
+        $dispatcher = new EventDispatcher($providerAggregator);
         $this->assertFalse($eventB->isPropagationStopped());
         $event = $dispatcher->dispatch($eventB);
         $this->assertTrue($eventB->isPropagationStopped());
