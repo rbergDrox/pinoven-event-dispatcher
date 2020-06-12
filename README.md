@@ -45,6 +45,7 @@ Dispatcher can retrieve listeners through different providers by using an aggreg
     $aggregator->addProvider($delegateListenerProvider1);
     $aggregator->addProvider($delegateListenerProvider2);
 ```
+## Mapper for Event/Listeners
 
 ```php
 \Pinoven\Dispatcher\Event\EventMapperProvider::class;
