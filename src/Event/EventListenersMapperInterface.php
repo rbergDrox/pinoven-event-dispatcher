@@ -8,10 +8,10 @@ use Pinoven\Dispatcher\Listener\ProxyListener;
 use Psr\EventDispatcher\ListenerProviderInterface;
 
 /**
- * Interface EventTypeMapperInterface
+ * Interface EventListenersMapperInterface
  * @package Pinoven\Dispatcher\Event
  */
-interface EventTypeMapperInterface extends ListenerProviderInterface
+interface EventListenersMapperInterface extends ListenerProviderInterface
 {
 
     /**
@@ -43,12 +43,12 @@ interface EventTypeMapperInterface extends ListenerProviderInterface
     public function mapListeners(): iterable;
 
     /**
-     * Provide a class that permits callable or final callable from EventTypeMapperInterface::mapListeners().
+     * Provide a class that permits callable or final callable from EventListenersMapperInterface::mapListeners().
      * It means if you provide something that's not callable for e.g "string" you can use the proxy and
      * write the logic to retrieve the callable.
-     * @see EventTypeMapperInterface::mapListeners()
-     *
      * @return ProxyListener
+     * @see EventListenersMapperInterface::mapListeners()
+     *
      */
     public function getProxyListener(): ProxyListener;
 }

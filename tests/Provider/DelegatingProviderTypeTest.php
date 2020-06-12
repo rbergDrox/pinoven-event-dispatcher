@@ -6,7 +6,7 @@ namespace Pinoven\Dispatcher\Provider;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container;
-use Pinoven\Dispatcher\Listener\ProxyCallableListenersMapper;
+use Pinoven\Dispatcher\Listener\ProxyListenersMapper;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleB;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleDefault;
 use Pinoven\Dispatcher\Samples\EventSampleA;
@@ -21,7 +21,7 @@ class DelegatingProviderTypeTest extends TestCase
      */
     private $eventMapperProviderB;
     /**
-     * @var DelegatingType
+     * @var DelegatingProvider
      */
     private $delegatingProviderType;
 
@@ -34,10 +34,10 @@ class DelegatingProviderTypeTest extends TestCase
             },
             ListenerSampleA::class => new ListenerSampleA()
         ]));
-        $proxy = new ProxyCallableListenersMapper($container);
+        $proxy = new ProxyListenersMapper($container);
         $this->eventMapperProviderB = new EventMapperProviderSampleB($proxy);
         $eventMapperDefault = new EventMapperProviderSampleDefault($proxy);
-        $this->delegatingProviderType = new DelegatingType($eventMapperDefault);
+        $this->delegatingProviderType = new DelegatingProvider($eventMapperDefault);
     }
 
     public function testSubscribeEventTypeMapper()

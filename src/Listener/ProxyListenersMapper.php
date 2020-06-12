@@ -11,10 +11,10 @@ use ReflectionException;
 use ReflectionObject;
 
 /**
- * Class ProxyCallableListenersMapper
+ * Class ProxyListenersMapper
  * @package Pinoven\Dispatcher\Listener
  */
-class ProxyCallableListenersMapper implements ProxyListenerWithContainer
+class ProxyListenersMapper implements ProxyListenerWithContainer
 {
     use ParameterDeriverTrait;
 
@@ -24,7 +24,7 @@ class ProxyCallableListenersMapper implements ProxyListenerWithContainer
     protected $container;
 
     /**
-     * ProxyCallableListenersMapper constructor.
+     * ProxyListenersMapper constructor.
      * @param ContainerInterface|null $container
      */
     public function __construct(?ContainerInterface $container = null)
@@ -134,7 +134,7 @@ class ProxyCallableListenersMapper implements ProxyListenerWithContainer
      * @param string $tag
      * @return array
      * @throws ReflectionException
-     * @see ProxyCallableListenersMapper::retrieveFromContainer();
+     * @see ProxyListenersMapper::retrieveFromContainer();
      *
      */
     protected function createCallableFromObject(object $item, string $tag): ?callable

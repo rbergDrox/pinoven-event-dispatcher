@@ -3,13 +3,13 @@
 
 namespace Pinoven\Dispatcher\Provider;
 
-use Fig\EventDispatcher\AggregateProvider;
+use Fig\EventDispatcher\AggregateProvider as FigAggregatorProvider;
 
 /**
- * Class ProviderAggregatorProvider
+ * Class AggregatorProvider
  * @package Pinoven\Dispatcher\Provider
  */
-class ProviderAggregatorProvider extends AggregateProvider implements AggregatorProviderInterface
+class AggregatorProvider extends FigAggregatorProvider implements AggregatorProviderInterface
 {
 
     /**

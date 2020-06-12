@@ -6,9 +6,9 @@ namespace Pinoven\Dispatcher\Dispatch;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container;
-use Pinoven\Dispatcher\Listener\ProxyCallableListenersMapper;
-use Pinoven\Dispatcher\Provider\DelegatingType;
-use Pinoven\Dispatcher\Provider\ProviderAggregatorProvider;
+use Pinoven\Dispatcher\Listener\ProxyListenersMapper;
+use Pinoven\Dispatcher\Provider\DelegatingProvider;
+use Pinoven\Dispatcher\Provider\AggregatorProvider;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleB;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleC;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleD;
@@ -26,7 +26,7 @@ class EventDispatcherTest extends TestCase
 {
 
     /**
-     * @var ProviderAggregatorProvider
+     * @var AggregatorProvider
      */
     private $providerAggregatorB;
     /**
@@ -34,7 +34,7 @@ class EventDispatcherTest extends TestCase
      */
     private $dispatcher;
     /**
-     * @var ProxyCallableListenersMapper
+     * @var ProxyListenersMapper
      */
     private $proxy;
 
@@ -49,16 +49,16 @@ class EventDispatcherTest extends TestCase
             },
             ListenerSampleA::class => new ListenerSampleA()
         ]));
-        $this->proxy = new ProxyCallableListenersMapper($container);
+        $this->proxy = new ProxyListenersMapper($container);
         $eventMapperProviderB = new EventMapperProviderSampleB($this->proxy);
         $eventMapperProviderC = new EventMapperProviderSampleC($this->proxy);
         $eventMapperDefault = new EventMapperProviderSampleDefault($this->proxy);
-        $delegatingTypeA = new DelegatingType($eventMapperDefault);
+        $delegatingTypeA = new DelegatingProvider($eventMapperDefault);
         $delegatingTypeA->subscribeEventTypeMapper($eventMapperProviderB);
-        $delegatingTypeB = new DelegatingType($eventMapperDefault);
+        $delegatingTypeB = new DelegatingProvider($eventMapperDefault);
         $delegatingTypeB->subscribeEventTypeMapper($eventMapperProviderC);
-        $providerAggregatorA = new ProviderAggregatorProvider();
-        $this->providerAggregatorB = new ProviderAggregatorProvider();
+        $providerAggregatorA = new AggregatorProvider();
+        $this->providerAggregatorB = new AggregatorProvider();
         $this->providerAggregatorB->subscribeProvider($delegatingTypeB);
         $providerAggregatorA->subscribeProvider($delegatingTypeA);
         $this->dispatcher = new EventDispatcher($providerAggregatorA);
@@ -87,10 +87,10 @@ class EventDispatcherTest extends TestCase
     public function testDispatcherWithEventStoppable()
     {
         $eventB = new EventSampleB();
-        $delegateProvider = new DelegatingType();
+        $delegateProvider = new DelegatingProvider();
         $delegateProvider->subscribeEventTypeMapper(new EventMapperProviderSampleD($this->proxy));
         $delegateProvider->subscribeEventTypeMapper(new EventMapperProviderSampleE($this->proxy));
-        $providerAggregator = new ProviderAggregatorProvider();
+        $providerAggregator = new AggregatorProvider();
         $providerAggregator->subscribeProvider($delegateProvider);
         $dispatcher = new EventDispatcher($providerAggregator);
         $this->assertFalse($eventB->isPropagationStopped());

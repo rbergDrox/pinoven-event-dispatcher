@@ -10,7 +10,7 @@ use Pinoven\Dispatcher\Listener\ProxyListener;
  * Class EventMapperProvider
  * @package Pinoven\Dispatcher\Event
  */
-abstract class EventMapperProvider implements EventTypeMapperInterface
+abstract class EventMapperProvider implements EventListenersMapperInterface
 {
     use TaggedProviderTrait;
 

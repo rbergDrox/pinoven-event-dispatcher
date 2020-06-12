@@ -4,18 +4,18 @@
 namespace Pinoven\Dispatcher\Provider;
 
 use Fig\EventDispatcher\DelegatingProvider as FigDelegatingProvider;
-use Pinoven\Dispatcher\Event\EventTypeMapperInterface;
+use Pinoven\Dispatcher\Event\EventListenersMapperInterface;
 
 /**
- * Class DelegatingType
+ * Class DelegatingProvider
  * @package Pinoven\Dispatcher\Provider
  */
-class DelegatingType extends FigDelegatingProvider implements ListenerEventTypeProviderInterface
+class DelegatingProvider extends FigDelegatingProvider implements ListenerEventTypeProviderInterface
 {
     /**
      * @inheritDoc
      */
-    public function subscribeEventTypeMapper(EventTypeMapperInterface $provider): ListenerEventTypeProviderInterface
+    public function subscribeEventTypeMapper(EventListenersMapperInterface $provider): ListenerEventTypeProviderInterface
     {
         return $this->addProvider($provider, [$provider->getEventType()]);
     }
@@ -23,7 +23,7 @@ class DelegatingType extends FigDelegatingProvider implements ListenerEventTypeP
     /**
      * @inheritDoc
      */
-    public function unsubscribeEventTypeMapper(EventTypeMapperInterface $provider): ListenerEventTypeProviderInterface
+    public function unsubscribeEventTypeMapper(EventListenersMapperInterface $provider): ListenerEventTypeProviderInterface
     {
         if (($key = array_search($provider, $this->providers[$provider->getEventType()])) !== false) {
             unset($this->providers[$provider->getEventType()][$key]);

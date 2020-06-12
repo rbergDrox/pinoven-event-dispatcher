@@ -3,7 +3,7 @@
 
 namespace Pinoven\Dispatcher\Provider;
 
-use Pinoven\Dispatcher\Event\EventTypeMapperInterface;
+use Pinoven\Dispatcher\Event\EventListenersMapperInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 
 /**
@@ -16,16 +16,16 @@ interface ListenerEventTypeProviderInterface extends ListenerProviderInterface
     /**
      * Subscribe event/listeners mapper.
      *
-     * @param EventTypeMapperInterface $provider
+     * @param EventListenersMapperInterface $provider
      * @return $this
      */
-    public function subscribeEventTypeMapper(EventTypeMapperInterface $provider): self;
+    public function subscribeEventTypeMapper(EventListenersMapperInterface $provider): self;
 
     /**
      * Unsubscribe event/listeners mapper.
      *
-     * @param EventTypeMapperInterface $provider
+     * @param EventListenersMapperInterface $provider
      * @return $this
      */
-    public function unsubscribeEventTypeMapper(EventTypeMapperInterface $provider): self;
+    public function unsubscribeEventTypeMapper(EventListenersMapperInterface $provider): self;
 }

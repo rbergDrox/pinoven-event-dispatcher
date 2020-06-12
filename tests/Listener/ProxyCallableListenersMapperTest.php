@@ -17,7 +17,7 @@ class ProxyCallableListenersMapperTest extends TestCase
 
     public function setUp(): void
     {
-        $this->proxy = new ProxyCallableListenersMapper();
+        $this->proxy = new ProxyListenersMapper();
         $container = new Container(new PimpleContainer([
             'container1' => new DateTime(),
             'container2' => [DateInterval::class, 'createFromDateString'],
@@ -52,7 +52,7 @@ class ProxyCallableListenersMapperTest extends TestCase
      */
     public function testListenerToCallableGetCallableWithContainerNotSet()
     {
-        $proxy = new ProxyCallableListenersMapper();
+        $proxy = new ProxyListenersMapper();
         $value = $proxy->listenerToCallable('testEvent', 'container4', 'format');
         $this->assertNull($value);
     }

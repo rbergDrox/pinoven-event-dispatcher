@@ -6,7 +6,7 @@ namespace Pinoven\Dispatcher\Provider;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container;
-use Pinoven\Dispatcher\Listener\ProxyCallableListenersMapper;
+use Pinoven\Dispatcher\Listener\ProxyListenersMapper;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleB;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleC;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleDefault;
@@ -26,12 +26,12 @@ class ProviderAggregatorTest extends TestCase
     private $eventMapperProviderC;
 
     /**
-     * @var DelegatingType
+     * @var DelegatingProvider
      */
     private $delegatingProviderTypeA;
 
     /**
-     * @var DelegatingType
+     * @var DelegatingProvider
      */
     private $delegatingProviderTypeB;
 
@@ -40,7 +40,7 @@ class ProviderAggregatorTest extends TestCase
      */
     private $eventMapperProviderDefault;
     /**
-     * @var ProviderAggregatorProvider
+     * @var AggregatorProvider
      */
     private $providerAggregator;
 
@@ -54,15 +54,15 @@ class ProviderAggregatorTest extends TestCase
             },
             ListenerSampleA::class => new ListenerSampleA()
         ]));
-        $proxy = new ProxyCallableListenersMapper($container);
+        $proxy = new ProxyListenersMapper($container);
         $this->eventMapperProviderB = new EventMapperProviderSampleB($proxy);
         $this->eventMapperProviderC = new EventMapperProviderSampleC($proxy);
         $this->eventMapperProviderDefault = new EventMapperProviderSampleDefault($proxy);
-        $this->delegatingProviderTypeA = new DelegatingType($this->eventMapperProviderDefault);
+        $this->delegatingProviderTypeA = new DelegatingProvider($this->eventMapperProviderDefault);
         $this->delegatingProviderTypeA->subscribeEventTypeMapper($this->eventMapperProviderB);
-        $this->delegatingProviderTypeB = new DelegatingType($this->eventMapperProviderDefault);
+        $this->delegatingProviderTypeB = new DelegatingProvider($this->eventMapperProviderDefault);
         $this->delegatingProviderTypeB->subscribeEventTypeMapper($this->eventMapperProviderC);
-        $this->providerAggregator = new ProviderAggregatorProvider();
+        $this->providerAggregator = new AggregatorProvider();
     }
 
 
