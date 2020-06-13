@@ -5,12 +5,13 @@ namespace Pinoven\Dispatcher\Event;
 
 use Fig\EventDispatcher\TaggedProviderTrait;
 use Pinoven\Dispatcher\Listener\ProxyListener;
+use Pinoven\Dispatcher\Priority\ItemPriorityInterface;
 
 /**
  * Class EventMapperProvider
  * @package Pinoven\Dispatcher\Event
  */
-abstract class EventMapperProvider implements EventListenersMapperInterface
+abstract class EventMapperProvider implements EventListenersMapperInterface, ItemPriorityInterface
 {
     use TaggedProviderTrait;
 
@@ -24,6 +25,10 @@ abstract class EventMapperProvider implements EventListenersMapperInterface
      * @var ProxyListener
      */
     protected $proxyListener;
+
+    /** @var int
+     */
+    protected $priority = 0;
 
     /**
      * EventMapperProvider constructor.
@@ -107,4 +112,21 @@ abstract class EventMapperProvider implements EventListenersMapperInterface
         yield $this->getEventType() => $this->filterListenersByTag($this->mapListeners(), self::DEFAULT_TAG);
         yield $this->getEventType() => $this->filterListenersByTag($this->mapListeners(), '__invoke');
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setPriority(int $priority): void
+    {
+        $this->priority = $priority;
+    }
+
 }

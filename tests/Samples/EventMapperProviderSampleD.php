@@ -5,6 +5,9 @@ namespace Pinoven\Dispatcher\Samples;
 
 class EventMapperProviderSampleD extends EventMapperProviderSampleDefault
 {
+
+    protected $priority = 10;
+
     public function getEventType(): string
     {
         return EventSampleB::class;
