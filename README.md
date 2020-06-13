@@ -38,8 +38,8 @@ Dispatcher can retrieve listeners through different providers by using an aggreg
     $eventMapper3 = new  EventMapperProviderSampleC($proxy);
     $defaultListenerProvider->addProvider($eventMapper3, [EventSampleA::class]);
     $delegateListenerProvider1 = new DelegatingProvider();
-    $delegateListenerProvider1->subscribeEventTypeMapper($eventMapper1);
-    $delegateListenerProvider1->subscribeEventTypeMapper($eventMapper2);
+    $delegateListenerProvider1->subscribe($eventMapper1);
+    $delegateListenerProvider1->subscribe($eventMapper2);
     // \Pinoven\Dispatcher\Provider\DelegatingType() Can take a default listenerProvider.
     $delegateListenerProvider2 = new DelegatingProvider($defaultListenerProvider);
     $aggregator->addProvider($delegateListenerProvider1);

@@ -15,7 +15,7 @@ class DelegatingProvider extends FigDelegatingProvider implements ListenerEventT
     /**
      * @inheritDoc
      */
-    public function subscribeEventTypeMapper(EventListenersMapperInterface $provider): ListenerEventTypeProviderInterface
+    public function subscribe(EventListenersMapperInterface $provider): ListenerEventTypeProviderInterface
     {
         return $this->addProvider($provider, [$provider->getEventType()]);
     }
@@ -23,7 +23,7 @@ class DelegatingProvider extends FigDelegatingProvider implements ListenerEventT
     /**
      * @inheritDoc
      */
-    public function unsubscribeEventTypeMapper(EventListenersMapperInterface $provider): ListenerEventTypeProviderInterface
+    public function unsubscribe(EventListenersMapperInterface $provider): ListenerEventTypeProviderInterface
     {
         if (($key = array_search($provider, $this->providers[$provider->getEventType()])) !== false) {
             unset($this->providers[$provider->getEventType()][$key]);

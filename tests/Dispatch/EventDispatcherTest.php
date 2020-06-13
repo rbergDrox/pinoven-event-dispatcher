@@ -54,9 +54,9 @@ class EventDispatcherTest extends TestCase
         $eventMapperProviderC = new EventMapperProviderSampleC($this->proxy);
         $eventMapperDefault = new EventMapperProviderSampleDefault($this->proxy);
         $delegatingTypeA = new DelegatingProvider($eventMapperDefault);
-        $delegatingTypeA->subscribeEventTypeMapper($eventMapperProviderB);
+        $delegatingTypeA->subscribe($eventMapperProviderB);
         $delegatingTypeB = new DelegatingProvider($eventMapperDefault);
-        $delegatingTypeB->subscribeEventTypeMapper($eventMapperProviderC);
+        $delegatingTypeB->subscribe($eventMapperProviderC);
         $providerAggregatorA = new AggregatorProvider();
         $this->providerAggregatorB = new AggregatorProvider();
         $this->providerAggregatorB->subscribeProvider($delegatingTypeB);
@@ -88,8 +88,8 @@ class EventDispatcherTest extends TestCase
     {
         $eventB = new EventSampleB();
         $delegateProvider = new DelegatingProvider();
-        $delegateProvider->subscribeEventTypeMapper(new EventMapperProviderSampleD($this->proxy));
-        $delegateProvider->subscribeEventTypeMapper(new EventMapperProviderSampleE($this->proxy));
+        $delegateProvider->subscribe(new EventMapperProviderSampleD($this->proxy));
+        $delegateProvider->subscribe(new EventMapperProviderSampleE($this->proxy));
         $providerAggregator = new AggregatorProvider();
         $providerAggregator->subscribeProvider($delegateProvider);
         $dispatcher = new EventDispatcher($providerAggregator);

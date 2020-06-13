@@ -19,7 +19,7 @@ interface ListenerEventTypeProviderInterface extends ListenerProviderInterface
      * @param EventListenersMapperInterface $provider
      * @return $this
      */
-    public function subscribeEventTypeMapper(EventListenersMapperInterface $provider): self;
+    public function subscribe(EventListenersMapperInterface $provider): self;
 
     /**
      * Unsubscribe event/listeners mapper.
@@ -27,5 +27,5 @@ interface ListenerEventTypeProviderInterface extends ListenerProviderInterface
      * @param EventListenersMapperInterface $provider
      * @return $this
      */
-    public function unsubscribeEventTypeMapper(EventListenersMapperInterface $provider): self;
+    public function unsubscribe(EventListenersMapperInterface $provider): self;
 }

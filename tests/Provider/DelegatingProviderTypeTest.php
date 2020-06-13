@@ -46,7 +46,7 @@ class DelegatingProviderTypeTest extends TestCase
         /** @var \Traversable $listenersBefore */
         $listenersBefore = $this->delegatingProviderType->getListenersForEvent($eventB);
         $this->assertEquals(0, iterator_count($listenersBefore));
-        $this->delegatingProviderType->subscribeEventTypeMapper($this->eventMapperProviderB);
+        $this->delegatingProviderType->subscribe($this->eventMapperProviderB);
         $listenersAfter = $this->delegatingProviderType->getListenersForEvent($eventB);
         /** @var \Traversable $listenersAfter */
         $this->assertEquals(2, iterator_count($listenersAfter));
@@ -55,11 +55,11 @@ class DelegatingProviderTypeTest extends TestCase
     public function testUnsubscribeEventTypeMapper()
     {
         $eventB = new EventSampleB();
-        $this->delegatingProviderType->subscribeEventTypeMapper($this->eventMapperProviderB);
+        $this->delegatingProviderType->subscribe($this->eventMapperProviderB);
         /** @var \Traversable $listenersBefore */
         $listenersBefore = $this->delegatingProviderType->getListenersForEvent($eventB);
         $this->assertEquals(2, iterator_count($listenersBefore));
-        $this->delegatingProviderType->unsubscribeEventTypeMapper($this->eventMapperProviderB);
+        $this->delegatingProviderType->unsubscribe($this->eventMapperProviderB);
         /** @var \Traversable $listenersAfter */
         $listenersAfter = $this->delegatingProviderType->getListenersForEvent($eventB);
         $this->assertEquals(0, iterator_count($listenersAfter));

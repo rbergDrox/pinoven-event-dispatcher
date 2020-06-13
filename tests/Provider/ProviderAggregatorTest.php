@@ -59,9 +59,9 @@ class ProviderAggregatorTest extends TestCase
         $this->eventMapperProviderC = new EventMapperProviderSampleC($proxy);
         $this->eventMapperProviderDefault = new EventMapperProviderSampleDefault($proxy);
         $this->delegatingProviderTypeA = new DelegatingProvider($this->eventMapperProviderDefault);
-        $this->delegatingProviderTypeA->subscribeEventTypeMapper($this->eventMapperProviderB);
+        $this->delegatingProviderTypeA->subscribe($this->eventMapperProviderB);
         $this->delegatingProviderTypeB = new DelegatingProvider($this->eventMapperProviderDefault);
-        $this->delegatingProviderTypeB->subscribeEventTypeMapper($this->eventMapperProviderC);
+        $this->delegatingProviderTypeB->subscribe($this->eventMapperProviderC);
         $this->providerAggregator = new AggregatorProvider();
     }
 
