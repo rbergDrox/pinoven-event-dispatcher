@@ -78,7 +78,7 @@ class DelegatingProviderTypeTest extends TestCase
         $this->assertEquals(0, iterator_count($listenersAfter));
     }
 
-    public function testSubscribeEventTypeMapperWithPriority()
+    public function testEventTypeMapperWithPriority()
     {
         $eventA= new EventSampleA();
         $mapper1 = new class($this->proxy) extends EventMapperProviderSampleDefault{
