@@ -5,6 +5,7 @@ namespace Pinoven\Dispatcher\Provider;
 
 use Fig\EventDispatcher\DelegatingProvider as FigDelegatingProvider;
 use Pinoven\Dispatcher\Event\EventListenersMapperInterface;
+use Pinoven\Dispatcher\Priority\ItemPriorityInterface;
 use Pinoven\Dispatcher\Priority\PrioritizeInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 
@@ -12,12 +13,17 @@ use Psr\EventDispatcher\ListenerProviderInterface;
  * Class DelegatingProvider
  * @package Pinoven\Dispatcher\Provider
  */
-class DelegatingProvider extends FigDelegatingProvider implements ListenerEventTypeProviderInterface
+class DelegatingProvider extends FigDelegatingProvider implements ListenerEventTypeProviderInterface, ItemPriorityInterface
 {
     /**
      * @var PrioritizeInterface|null
      */
     private $prioritize;
+
+    /**
+     * @var int
+     */
+    protected $priority;
 
     /**
      * DelegatingProvider constructor.
@@ -65,5 +71,21 @@ class DelegatingProvider extends FigDelegatingProvider implements ListenerEventT
             }
         }
         return parent::getListenersForEvent($event);
+    }
+
+    /**
+     * @inheritDoct
+     */
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setPriority(int $priority): void
+    {
+        $this->priority = $priority;
     }
 }
