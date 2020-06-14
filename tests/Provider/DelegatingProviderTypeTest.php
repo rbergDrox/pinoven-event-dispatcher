@@ -6,7 +6,6 @@ namespace Pinoven\Dispatcher\Provider;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container;
-use Pinoven\Dispatcher\Event\EventListenersMapperInterface;
 use Pinoven\Dispatcher\Listener\ProxyListenersMapper;
 use Pinoven\Dispatcher\Priority\PrioritizeProvider;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleB;
@@ -15,7 +14,6 @@ use Pinoven\Dispatcher\Samples\EventSampleA;
 use Pinoven\Dispatcher\Samples\EventSampleB;
 use Pinoven\Dispatcher\Samples\ListenerSampleA;
 use Pinoven\Dispatcher\Samples\ListenerSampleB;
-use Psr\Container\ContainerInterface;
 
 class DelegatingProviderTypeTest extends TestCase
 {
@@ -24,15 +22,17 @@ class DelegatingProviderTypeTest extends TestCase
      * @var EventMapperProviderSampleB
      */
     private $eventMapperProviderB;
+
     /**
      * @var DelegatingProvider
      */
-    private $delegatingProviderType;
+    private $delegatingProvider;
 
     /**
      * @var EventMapperProviderSampleDefault
      */
     private $eventMapperDefault;
+
     /**
      * @var ProxyListenersMapper
      */
@@ -43,6 +43,7 @@ class DelegatingProviderTypeTest extends TestCase
         $container = new Container(new PimpleContainer([
             'eventListenerInvoked' =>  function () {
                     return function (EventSampleA $eventSample) {
+                        $eventSample->increment();
                     };
             },
             ListenerSampleA::class => new ListenerSampleA()
@@ -50,17 +51,17 @@ class DelegatingProviderTypeTest extends TestCase
         $this->proxy = new ProxyListenersMapper($container);
         $this->eventMapperProviderB = new EventMapperProviderSampleB($this->proxy);
         $this->eventMapperDefault = new EventMapperProviderSampleDefault($this->proxy);
-        $this->delegatingProviderType = new DelegatingProvider($this->eventMapperDefault);
+        $this->delegatingProvider = new DelegatingProvider($this->eventMapperDefault);
     }
 
     public function testSubscribeEventTypeMapper()
     {
         $eventB = new EventSampleB();
         /** @var \Traversable $listenersBefore */
-        $listenersBefore = $this->delegatingProviderType->getListenersForEvent($eventB);
+        $listenersBefore = $this->delegatingProvider->getListenersForEvent($eventB);
         $this->assertEquals(0, iterator_count($listenersBefore));
-        $this->delegatingProviderType->subscribe($this->eventMapperProviderB);
-        $listenersAfter = $this->delegatingProviderType->getListenersForEvent($eventB);
+        $this->delegatingProvider->subscribe($this->eventMapperProviderB);
+        $listenersAfter = $this->delegatingProvider->getListenersForEvent($eventB);
         /** @var \Traversable $listenersAfter */
         $this->assertEquals(2, iterator_count($listenersAfter));
     }
@@ -68,13 +69,13 @@ class DelegatingProviderTypeTest extends TestCase
     public function testUnsubscribeEventTypeMapper()
     {
         $eventB = new EventSampleB();
-        $this->delegatingProviderType->subscribe($this->eventMapperProviderB);
+        $this->delegatingProvider->subscribe($this->eventMapperProviderB);
         /** @var \Traversable $listenersBefore */
-        $listenersBefore = $this->delegatingProviderType->getListenersForEvent($eventB);
+        $listenersBefore = $this->delegatingProvider->getListenersForEvent($eventB);
         $this->assertEquals(2, iterator_count($listenersBefore));
-        $this->delegatingProviderType->unsubscribe($this->eventMapperProviderB);
+        $this->delegatingProvider->unsubscribe($this->eventMapperProviderB);
         /** @var \Traversable $listenersAfter */
-        $listenersAfter = $this->delegatingProviderType->getListenersForEvent($eventB);
+        $listenersAfter = $this->delegatingProvider->getListenersForEvent($eventB);
         $this->assertEquals(0, iterator_count($listenersAfter));
     }
 
