@@ -57,12 +57,11 @@ It helps to declare the event and related listeners.
 @see Todo
 
 # Todo
-- Event doesn't provide the "tag" method the default one have to be Event::tag() tag to match the default value there:
+- Event doesn't provide the "tag" method the default one have to be Event::tag() tag to match the default "handler" value there:
 ```php
     use Pinoven\Dispatcher\Event\EventMapperProvider;
     EventMapperProvider::DEFAULT_TAG_METHOD;
 ```
-- Implement Listeners and Listeners providers position position: priority
 - Deal with a payload.
 - Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.
 - Attach Listener.
@@ -71,6 +70,7 @@ It helps to declare the event and related listeners.
 - Implement Container
 - Implement CacheInterface
 - Implement  own Collection/Generator
+- Clean Sample
 
 # Contribution
  - Create issue: improvement + the reason why it should be implemented or issue + how to reproduce.
