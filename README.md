@@ -48,7 +48,8 @@ Dispatcher can retrieve listeners through different providers by using an aggreg
 ## Mapper for Event/Listeners
 
 ```php
-\Pinoven\Dispatcher\Event\EventMapperProvider::class;
+use Pinoven\Dispatcher\Event\EventMapperProvider;
+EventMapperProvider::class;
 ```
 
 It helps to declare the event and related listeners.
@@ -57,10 +58,11 @@ It helps to declare the event and related listeners.
 @see Todo
 
 # Todo
-- Event doesn't provide the "tag" method the default one have to be Event::tag() tag to match the default "handler" value there:
+- Event doesn't provide the "tag" method the default one have to be Event::tag() tag to match the default value there and fill use the default method "handler":
 ```php
     use Pinoven\Dispatcher\Event\EventMapperProvider;
     EventMapperProvider::DEFAULT_TAG_METHOD;
+    EventMapperProvider::DEFAULT_TAG;
 ```
 - Deal with a payload.
 - Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.
