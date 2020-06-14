@@ -14,7 +14,7 @@ interface PrioritizeInterface
 {
 
     /**
-     * Sort ListenerProvider list based on there
+     * Sort ListenerProvider list based on priority.
      *
      * @param ListenerProviderInterface[] $providers
      * @return ListenerProviderInterface[]
