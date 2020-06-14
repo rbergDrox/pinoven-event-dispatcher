@@ -4,6 +4,7 @@
 namespace Pinoven\Dispatcher\Provider;
 
 use Fig\EventDispatcher\AggregateProvider as FigAggregatorProvider;
+use Pinoven\Dispatcher\Priority\PrioritizeInterface;
 
 /**
  * Class AggregatorProvider
@@ -11,6 +12,19 @@ use Fig\EventDispatcher\AggregateProvider as FigAggregatorProvider;
  */
 class AggregatorProvider extends FigAggregatorProvider implements AggregatorProviderInterface
 {
+    /**
+     * @var PrioritizeInterface|null
+     */
+    private $prioritize;
+
+    /**
+     * AggregatorProvider constructor.
+     * @param PrioritizeInterface|null $prioritize
+     */
+    public function __construct(?PrioritizeInterface $prioritize = null)
+    {
+        $this->prioritize = $prioritize;
+    }
 
     /**
      * @inheritDoc
@@ -29,5 +43,17 @@ class AggregatorProvider extends FigAggregatorProvider implements AggregatorProv
             unset($this->providers[$key]);
         }
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getListenersForEvent(object $event): iterable
+    {
+        if ($this->prioritize) {
+            $sortedProviders = $this->prioritize->sortItems($this->providers);
+            $this->providers = $sortedProviders;
+        }
+        return parent::getListenersForEvent($event);
     }
 }

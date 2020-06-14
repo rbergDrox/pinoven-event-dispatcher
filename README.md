@@ -38,8 +38,8 @@ Dispatcher can retrieve listeners through different providers by using an aggreg
     $eventMapper3 = new  EventMapperProviderSampleC($proxy);
     $defaultListenerProvider->addProvider($eventMapper3, [EventSampleA::class]);
     $delegateListenerProvider1 = new DelegatingProvider();
-    $delegateListenerProvider1->subscribeEventTypeMapper($eventMapper1);
-    $delegateListenerProvider1->subscribeEventTypeMapper($eventMapper2);
+    $delegateListenerProvider1->subscribe($eventMapper1);
+    $delegateListenerProvider1->subscribe($eventMapper2);
     // \Pinoven\Dispatcher\Provider\DelegatingType() Can take a default listenerProvider.
     $delegateListenerProvider2 = new DelegatingProvider($defaultListenerProvider);
     $aggregator->addProvider($delegateListenerProvider1);
@@ -48,7 +48,8 @@ Dispatcher can retrieve listeners through different providers by using an aggreg
 ## Mapper for Event/Listeners
 
 ```php
-\Pinoven\Dispatcher\Event\EventMapperProvider::class;
+use Pinoven\Dispatcher\Event\EventMapperProvider;
+EventMapperProvider::class;
 ```
 
 It helps to declare the event and related listeners.
@@ -57,20 +58,23 @@ It helps to declare the event and related listeners.
 @see Todo
 
 # Todo
-- Event doesn't provide the "tag" method the default one have to be Event::tag() tag to match the default value there:
+- Event doesn't provide the "tag" method the default one have to be Event::tag() tag to match the default value there and fill use the default method "handler":
 ```php
     use Pinoven\Dispatcher\Event\EventMapperProvider;
     EventMapperProvider::DEFAULT_TAG_METHOD;
+    EventMapperProvider::DEFAULT_TAG;
 ```
-- Implement Listeners and Listeners providers position position: priority
 - Deal with a payload.
 - Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.
 - Attach Listener.
-- Send Specific Event by string. These events are not classes. Something like `dispatch('dispatcher.instantiated', $values);`.
 - Implement Logger
 - Implement Container
 - Implement CacheInterface
+- Send Specific Event by string. These events are not classes. Something like `dispatch('dispatcher.instantiated', $values);`.
+- Attach/detach Listener ?
+- Sort/Prioritize Listener ?
 - Implement  own Collection/Generator
+- Clean Sample
 
 # Contribution
  - Create issue: improvement + the reason why it should be implemented or issue + how to reproduce.
