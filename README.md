@@ -67,10 +67,12 @@ It helps to declare the event and related listeners.
 - Deal with a payload.
 - Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.
 - Attach Listener.
-- Send Specific Event by string. These events are not classes. Something like `dispatch('dispatcher.instantiated', $values);`.
 - Implement Logger
 - Implement Container
 - Implement CacheInterface
+- Send Specific Event by string. These events are not classes. Something like `dispatch('dispatcher.instantiated', $values);`.
+- Attach/detach Listener ?
+- Sort/Prioritize Listener ?
 - Implement  own Collection/Generator
 - Clean Sample
 
