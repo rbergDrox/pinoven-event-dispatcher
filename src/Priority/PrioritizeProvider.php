@@ -13,13 +13,27 @@ class PrioritizeProvider implements PrioritizeInterface
 {
 
     /**
+     * Any traversable to array.
+     *
+     * @param iterable $itemsGen
+     * @return array
+     */
+    private function traversableToArray(iterable $itemsGen)
+    {
+        $items = [];
+        foreach ($itemsGen as $item) {
+            $items[] = $item;
+        }
+        return $items;
+    }
+
+    /**
      * @inheritDoc
      */
     public function sortItems(iterable $items): iterable
     {
         if (!is_array($items) && $items instanceof Traversable) {
-            /** @var Traversable $items */
-            $items = iterator_to_array($items);
+            $items = $this->traversableToArray($items);
         }
 
         usort(

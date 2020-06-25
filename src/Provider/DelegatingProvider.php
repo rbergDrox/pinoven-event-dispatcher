@@ -26,16 +26,24 @@ class DelegatingProvider extends FigDelegatingProvider implements ListenerEventT
     protected $priority;
 
     /**
+     * @var bool
+     */
+    private $sortListeners;
+
+    /**
      * DelegatingProvider constructor.
      * @param ListenerProviderInterface|null $defaultProvider
      * @param PrioritizeInterface|null $prioritize
+     * @param bool $sortListeners
      */
     public function __construct(
         ?ListenerProviderInterface $defaultProvider = null,
-        ?PrioritizeInterface $prioritize = null
+        ?PrioritizeInterface $prioritize = null,
+        bool $sortListeners = false
     ) {
         parent::__construct($defaultProvider);
         $this->prioritize = $prioritize;
+        $this->sortListeners = $sortListeners;
     }
 
     /**
@@ -70,7 +78,11 @@ class DelegatingProvider extends FigDelegatingProvider implements ListenerEventT
                 }
             }
         }
-        return parent::getListenersForEvent($event);
+        $listeners = parent::getListenersForEvent($event);
+        if ($this->prioritize && $this->sortListeners) {
+            $listeners = $this->prioritize->sortItems($listeners);
+        }
+        yield from $listeners;
     }
 
     /**
