@@ -23,7 +23,7 @@ class DelegatingProvider extends FigDelegatingProvider implements ListenerEventT
     /**
      * @var int
      */
-    protected $priority;
+    protected $priority = 0;
 
     /**
      * @var bool
