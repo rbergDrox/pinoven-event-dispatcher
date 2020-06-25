@@ -19,7 +19,7 @@ class ListenerSampleD implements ItemPriorityInterface
      */
     public function getPriority(): int
     {
-        return 0;
+        return $this->priority;
     }
 
     /**
