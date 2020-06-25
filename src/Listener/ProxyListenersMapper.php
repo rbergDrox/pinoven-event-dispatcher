@@ -5,6 +5,8 @@ namespace Pinoven\Dispatcher\Listener;
 
 use Closure;
 use Fig\EventDispatcher\ParameterDeriverTrait;
+use Pinoven\Dispatcher\Priority\ItemPriorityInterface;
+use Pinoven\Dispatcher\Priority\WrapCallableFactoryInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
@@ -24,12 +26,21 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
     protected $container;
 
     /**
+     * @var WrapCallableFactoryInterface|null
+     */
+    private $wrapCallableFactory;
+
+    /**
      * ProxyListenersMapper constructor.
      * @param ContainerInterface|null $container
+     * @param WrapCallableFactoryInterface|null $wrapCallableFactory
      */
-    public function __construct(?ContainerInterface $container = null)
-    {
+    public function __construct(
+        ?ContainerInterface $container = null,
+        ?WrapCallableFactoryInterface $wrapCallableFactory = null
+    ) {
         $this->container = $container;
+        $this->wrapCallableFactory = $wrapCallableFactory;
     }
 
     /**
@@ -55,6 +66,9 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
             }
             $type = $this->getParameterType($callable);
             if ($type == $eventType) {
+                if ($this->wrapCallableFactory && !($callable instanceof ItemPriorityInterface)) {
+                    $callable = $this->wrapCallableFactory->createWrapCallablePriority($callable);
+                }
                 yield $callable;
             }
         }
