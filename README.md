@@ -117,7 +117,7 @@ use Pinoven\Dispatcher\Priority\WrapCallableFactoryInterface;
 - Attach/detach Listener ?
 - Implement  own Collection/Generator
 - Clean Sample
--Document implementation of prioritizing in Aggregator, Delegate, Event mapper
+- Document implementation of prioritizing in Aggregator, Delegate, Event mapper
 
 # Contribution
  - Create issue: improvement + the reason why it should be implemented or issue + how to reproduce.
