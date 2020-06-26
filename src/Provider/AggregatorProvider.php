@@ -16,14 +16,20 @@ class AggregatorProvider extends FigAggregatorProvider implements AggregatorProv
      * @var PrioritizeInterface|null
      */
     private $prioritize;
+    /**
+     * @var bool
+     */
+    private $sortListeners;
 
     /**
      * AggregatorProvider constructor.
      * @param PrioritizeInterface|null $prioritize
+     * @param bool $sortListeners
      */
-    public function __construct(?PrioritizeInterface $prioritize = null)
+    public function __construct(?PrioritizeInterface $prioritize = null, bool $sortListeners = false)
     {
         $this->prioritize = $prioritize;
+        $this->sortListeners = $sortListeners;
     }
 
     /**
@@ -54,6 +60,10 @@ class AggregatorProvider extends FigAggregatorProvider implements AggregatorProv
             $sortedProviders = $this->prioritize->sortItems($this->providers);
             $this->providers = $sortedProviders;
         }
-        return parent::getListenersForEvent($event);
+        $listeners = parent::getListenersForEvent($event);
+        if ($this->prioritize && $this->sortListeners) {
+            $listeners = $this->prioritize->sortItems($listeners);
+        }
+        return $listeners;
     }
 }

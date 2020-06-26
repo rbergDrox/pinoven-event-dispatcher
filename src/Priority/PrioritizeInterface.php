@@ -3,7 +3,7 @@
 
 namespace Pinoven\Dispatcher\Priority;
 
-use Psr\EventDispatcher\ListenerProviderInterface;
+use Traversable;
 
 /**
  * Interface PrioritizeInterface
@@ -16,8 +16,8 @@ interface PrioritizeInterface
     /**
      * Sort ListenerProvider list based on priority.
      *
-     * @param ListenerProviderInterface[] $providers
-     * @return ListenerProviderInterface[]
+     * @param iterable<ItemPriorityInterface> $items
+     * @return ItemPriorityInterface[]
      */
-    public function sortItems(array $providers): array;
+    public function sortItems(iterable $items): iterable;
 }

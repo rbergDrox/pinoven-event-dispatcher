@@ -8,6 +8,10 @@ use DateTime;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container;
+use Pinoven\Dispatcher\Priority\ItemPriorityInterface;
+use Pinoven\Dispatcher\Priority\WrapCallableFactory;
+use Pinoven\Dispatcher\Samples\EventSampleB;
+use Pinoven\Dispatcher\Samples\ListenerSampleD;
 use stdClass;
 
 class ProxyCallableListenersMapperTest extends TestCase
@@ -42,6 +46,7 @@ class ProxyCallableListenersMapperTest extends TestCase
     public function testListenerToCallableGetCallableWithClosure()
     {
         $listener = function (stdClass $event) {
+            $event->test = 0;
         };
         $value = $this->proxy->listenerToCallable('testEvent', $listener, '__invoke');
         $this->assertIsCallable($value);
@@ -83,12 +88,13 @@ class ProxyCallableListenersMapperTest extends TestCase
 
     /**
      * @throws \ReflectionException
-     */
+0     */
     public function testListenerToCallableGetCallableWithObjectInvokable()
     {
         $listener = new class {
             public function __invoke(stdClass $event)
             {
+                $event->test = 0;
             }
         };
         $value = $this->proxy->listenerToCallable('testEvent', $listener, '__invoke');
@@ -127,8 +133,46 @@ class ProxyCallableListenersMapperTest extends TestCase
         $value = $this->proxy->getCallableListeners(DateTime::class, [ new class {
             public function add(DateTime $event)
             {
+                $event->add(new DateInterval('1PT'));
             }
         }, 'container6'], 'add');
         $this->assertEquals(2, iterator_count($value));
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function testListenerToCallableGetCallableGetWrapItemPriorityInterface()
+    {
+        $test1 = new class {
+            public function __invoke(EventSampleB $eventSampleA)
+            {
+                $eventSampleA->increment();
+            }
+        };
+        $test2 =new ListenerSampleD();
+        $proxy = new ProxyListenersMapper();
+        /** @var \Traversable $listeners */
+        $listeners = $proxy->getCallableListeners(EventSampleB::class, [ $test1, $test2], '__invoke');
+        $listenersArray = iterator_to_array($listeners);
+        $this->assertNotNull($listenersArray[0]);
+        $this->assertNotNull($listenersArray[1]);
+        $this->assertNotInstanceOf(ItemPriorityInterface::class, $listenersArray[0]);
+        $this->assertInstanceOf(ItemPriorityInterface::class, $listenersArray[1]);
+        $wrapFactory = new WrapCallableFactory();
+        $proxy1 = new ProxyListenersMapper(null, $wrapFactory);
+        $listeners = $proxy->getCallableListeners(EventSampleB::class, [ $test1, $test2], '__invoke');
+        $listenersArray = iterator_to_array($listeners);
+        $this->assertNotNull($listenersArray[0]);
+        $this->assertNotNull($listenersArray[1]);
+        $this->assertNotInstanceOf(ItemPriorityInterface::class, $listenersArray[0]);
+        $this->assertInstanceOf(ItemPriorityInterface::class, $listenersArray[1]);
+        /** @var \Traversable $listeners */
+        $listeners = $proxy1->getCallableListeners(EventSampleB::class, [ $test1, $test2], '__invoke');
+        $listenersArray = iterator_to_array($listeners);
+        $this->assertNotNull($listenersArray[0]);
+        $this->assertNotNull($listenersArray[1]);
+        $this->assertInstanceOf(ItemPriorityInterface::class, $listenersArray[0]);
+        $this->assertInstanceOf(ItemPriorityInterface::class, $listenersArray[1]);
     }
 }

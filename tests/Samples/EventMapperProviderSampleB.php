@@ -18,14 +18,18 @@ class EventMapperProviderSampleB extends EventMapperProviderSampleDefault
             new class {
                 public function eventA_test_handler(EventSampleB $eventSampleB)
                 {
+                    $eventSampleB->test = 0;
                 }
             },
             new class {
                 public function eventB_test_handler(EventSampleB $eventSampleB)
                 {
+                    $eventSampleB->test = 0;
                 }
             },
             function (EventSampleB $eventSampleB, EventSampleA $eventSampleA) {
+                $eventSampleB->test = 0;
+                $eventSampleA->test = 0;
             }
         ];
     }

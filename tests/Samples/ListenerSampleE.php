@@ -5,9 +5,10 @@ namespace Pinoven\Dispatcher\Samples;
 
 use Pinoven\Dispatcher\Priority\ItemPriorityInterface;
 
-class ListenerSampleD implements ItemPriorityInterface
+class ListenerSampleE implements ItemPriorityInterface
 {
-    protected $priority = 0;
+    public $priority = 0;
+    public $level = 0;
 
     public function __invoke(EventSampleB $eventSampleB)
     {

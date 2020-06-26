@@ -4,7 +4,7 @@
 Implement event dispatcher to dispatch events. It provides a way to register listeners and subscribe/unsubscribe many listeners providers.
 Dispatcher can retrieve listeners through different providers by using an aggregator.
 
-# Usage
+# Features/Usage
 
 ## Dispatcher
 ```php
@@ -52,10 +52,52 @@ use Pinoven\Dispatcher\Event\EventMapperProvider;
 EventMapperProvider::class;
 ```
 
-It helps to declare the event and related listeners.
+It helps to declare the event type and related listeners.
 
-# Features
-@see Todo
+```php
+use Pinoven\Dispatcher\Event\EventMapperProvider;
+EventMapperProvider::class;
+```
+
+## Order/Prioritize
+
+### Order items
+To manage sorting on providers, listeners you have to implement:
+
+```php
+use Pinoven\Dispatcher\Priority\PrioritizeInterface;
+class Prioritize implements PrioritizeInterface 
+{
+    public function sortItems(iterable $items) : iterable
+    {
+     // TODO: Implement sortItems() method.
+    }
+}
+```
+
+See the implementation with ```PrioritizeProvider```:
+
+```php
+use Pinoven\Dispatcher\Priority\PrioritizeProvider;
+```
+
+### Handle Priority
+
+If the listener is a class then it should  implement: 
+```php
+use Pinoven\Dispatcher\Priority\ItemPriorityInterface;
+```
+
+If your listener/callable can implement this interface you can wrap by using:
+```php
+use Pinoven\Dispatcher\Priority\WrapCallableInterface;
+```
+
+You may need to do some stuff on the wrapper, so you can use the factory to transformer your listener/callable to wrapper item.
+```php
+use Pinoven\Dispatcher\Priority\WrapCallableFactoryInterface;
+```
+
 
 # Todo
 - Event doesn't provide the "tag" method the default one have to be Event::tag() tag to match the default value there and fill use the default method "handler":
@@ -64,6 +106,7 @@ It helps to declare the event and related listeners.
     EventMapperProvider::DEFAULT_TAG_METHOD;
     EventMapperProvider::DEFAULT_TAG;
 ```
+- Better class naming.
 - Deal with a payload.
 - Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.
 - Attach Listener.
@@ -72,9 +115,9 @@ It helps to declare the event and related listeners.
 - Implement CacheInterface
 - Send Specific Event by string. These events are not classes. Something like `dispatch('dispatcher.instantiated', $values);`.
 - Attach/detach Listener ?
-- Sort/Prioritize Listener ?
 - Implement  own Collection/Generator
 - Clean Sample
+-Document implementation of prioritizing in Aggregator, Delegate, Event mapper
 
 # Contribution
  - Create issue: improvement + the reason why it should be implemented or issue + how to reproduce.
