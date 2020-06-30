@@ -7,10 +7,10 @@ use Pinoven\Dispatcher\Event\EventListenersMapperInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 
 /**
- * Interface ListenerEventTypeProviderInterface
+ * Interface EventListenersSubscriberInterface
  * @package Pinoven\Dispatcher\Provider
  */
-interface ListenerEventTypeProviderInterface extends ListenerProviderInterface
+interface EventListenersSubscriberInterface extends ListenerProviderInterface
 {
 
     /**

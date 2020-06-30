@@ -6,17 +6,17 @@ namespace Pinoven\Dispatcher\Provider;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container;
-use Pinoven\Dispatcher\Listener\ProxyListenersMapper;
-use Pinoven\Dispatcher\Priority\PrioritizeProvider;
+use Pinoven\Dispatcher\Listener\ProxyListeners;
+use Pinoven\Dispatcher\Priority\Prioritize;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleB;
-use Pinoven\Dispatcher\Samples\EventMapperProviderSampleDefault;
+use Pinoven\Dispatcher\Samples\EventListenersMapperSampleDefault;
 use Pinoven\Dispatcher\Samples\EventSampleA;
 use Pinoven\Dispatcher\Samples\EventSampleB;
 use Pinoven\Dispatcher\Samples\ListenerSampleA;
 use Pinoven\Dispatcher\Samples\ListenerSampleB;
 use Pinoven\Dispatcher\Samples\ListenerSampleE;
 
-class DelegatingProviderTypeTest extends TestCase
+class DelegatingProviderTest extends TestCase
 {
 
     /**
@@ -30,12 +30,12 @@ class DelegatingProviderTypeTest extends TestCase
     private $delegatingProvider;
 
     /**
-     * @var EventMapperProviderSampleDefault
+     * @var EventListenersMapperSampleDefault
      */
     private $eventMapperDefault;
 
     /**
-     * @var ProxyListenersMapper
+     * @var ProxyListeners
      */
     private $proxy;
 
@@ -49,9 +49,9 @@ class DelegatingProviderTypeTest extends TestCase
             },
             ListenerSampleA::class => new ListenerSampleA()
         ]));
-        $this->proxy = new ProxyListenersMapper($container);
+        $this->proxy = new ProxyListeners($container);
         $this->eventMapperProviderB = new EventMapperProviderSampleB($this->proxy);
-        $this->eventMapperDefault = new EventMapperProviderSampleDefault($this->proxy);
+        $this->eventMapperDefault = new EventListenersMapperSampleDefault($this->proxy);
         $this->delegatingProvider = new DelegatingProvider($this->eventMapperDefault);
     }
 
@@ -83,7 +83,7 @@ class DelegatingProviderTypeTest extends TestCase
     public function testEventTypeMapperWithPriority()
     {
         $eventA= new EventSampleA();
-        $mapper1 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper1 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleA::class;
@@ -101,7 +101,7 @@ class DelegatingProviderTypeTest extends TestCase
                 ];
             }
         };
-        $mapper2 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper2 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleA::class;
@@ -119,7 +119,7 @@ class DelegatingProviderTypeTest extends TestCase
                 ];
             }
         };
-        $prioritize = new PrioritizeProvider();
+        $prioritize = new Prioritize();
         $delegatingProvider = new DelegatingProvider($this->eventMapperDefault, $prioritize);
         $delegatingProvider->subscribe($mapper1);
         $delegatingProvider->subscribe($mapper2);
@@ -138,7 +138,7 @@ class DelegatingProviderTypeTest extends TestCase
     public function testEventTypeMapperListenerWithPriority()
     {
         $event = new EventSampleB();
-        $mapper1 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper1 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleB::class;
@@ -153,7 +153,7 @@ class DelegatingProviderTypeTest extends TestCase
                 ];
             }
         };
-        $mapper2 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper2 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleB::class;
@@ -172,7 +172,7 @@ class DelegatingProviderTypeTest extends TestCase
                 ];
             }
         };
-        $prioritize = new PrioritizeProvider();
+        $prioritize = new Prioritize();
         $delegatingProvider = new DelegatingProvider($this->eventMapperDefault, $prioritize);
         $delegatingProvider->subscribe($mapper1);
         $delegatingProvider->subscribe($mapper2);

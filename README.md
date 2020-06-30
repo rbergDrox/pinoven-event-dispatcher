@@ -22,7 +22,7 @@ Dispatcher can retrieve listeners through different providers by using an aggreg
 
 ```php
     use Fig\EventDispatcher\DelegatingProvider as FigDelegatingProvider;
-    use Pinoven\Dispatcher\Listener\ProxyListenersMapper;
+    use Pinoven\Dispatcher\Listener\ProxyListeners;
     use Pinoven\Dispatcher\Provider\AggregatorProvider;
     use Pinoven\Dispatcher\Provider\DelegatingProvider;
     use Pinoven\Dispatcher\Samples\EventMapperProviderSample;
@@ -31,7 +31,7 @@ Dispatcher can retrieve listeners through different providers by using an aggreg
     use Pinoven\Dispatcher\Samples\EventSampleA;
  
     $aggregator = new AggregatorProvider();
-    $proxy = new ProxyListenersMapper();
+    $proxy = new ProxyListeners();
     $defaultListenerProvider = new FigDelegatingProvider();
     $eventMapper1 = new  EventMapperProviderSample($proxy);
     $eventMapper2 = new  EventMapperProviderSampleB($proxy);
@@ -48,15 +48,15 @@ Dispatcher can retrieve listeners through different providers by using an aggreg
 ## Mapper for Event/Listeners
 
 ```php
-use Pinoven\Dispatcher\Event\EventMapperProvider;
-EventMapperProvider::class;
+use Pinoven\Dispatcher\Event\EventListenersMapper;
+EventListenersMapper::class;
 ```
 
 It helps to declare the event type and related listeners.
 
 ```php
-use Pinoven\Dispatcher\Event\EventMapperProvider;
-EventMapperProvider::class;
+use Pinoven\Dispatcher\Event\EventListenersMapper;
+EventListenersMapper::class;
 ```
 
 ## Order/Prioritize
@@ -70,15 +70,16 @@ class Prioritize implements PrioritizeInterface
 {
     public function sortItems(iterable $items) : iterable
     {
-     // TODO: Implement sortItems() method.
+        // Code ...
+         return  $items;
     }
 }
 ```
 
-See the implementation with ```PrioritizeProvider```:
-
+See the implementation 
 ```php
-use Pinoven\Dispatcher\Priority\PrioritizeProvider;
+use Pinoven\Dispatcher\Priority\Prioritize;
+$prioritize = new Prioritize();
 ```
 
 ### Handle Priority
@@ -86,30 +87,31 @@ use Pinoven\Dispatcher\Priority\PrioritizeProvider;
 If the listener is a class then it should  implement: 
 ```php
 use Pinoven\Dispatcher\Priority\ItemPriorityInterface;
+ItemPriorityInterface::class;
 ```
 
-If your listener/callable can implement this interface you can wrap by using:
+If your listener/callable cannot directly implement this interface you can wrap by using:
 ```php
-use Pinoven\Dispatcher\Priority\WrapCallableInterface;
+use Pinoven\Dispatcher\Priority\CallableInterface;
+CallableInterface::class;
 ```
 
 You may need to do some stuff on the wrapper, so you can use the factory to transformer your listener/callable to wrapper item.
 ```php
-use Pinoven\Dispatcher\Priority\WrapCallableFactoryInterface;
+use Pinoven\Dispatcher\Priority\CallableItemPriorityInterface;
+CallableItemPriorityInterface::class;;
 ```
 
 
 # Todo
 - Event doesn't provide the "tag" method the default one have to be Event::tag() tag to match the default value there and fill use the default method "handler":
 ```php
-    use Pinoven\Dispatcher\Event\EventMapperProvider;
-    EventMapperProvider::DEFAULT_TAG_METHOD;
-    EventMapperProvider::DEFAULT_TAG;
+    use Pinoven\Dispatcher\Event\EventListenersMapper;
+    EventListenersMapper::DEFAULT_TAG_METHOD;
+    EventListenersMapper::DEFAULT_TAG;
 ```
-- Better class naming.
 - Deal with a payload.
 - Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.
-- Attach Listener.
 - Implement Logger
 - Implement Container
 - Implement CacheInterface

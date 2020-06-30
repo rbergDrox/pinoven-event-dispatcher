@@ -4,10 +4,10 @@
 namespace Pinoven\Dispatcher\Priority;
 
 /**
- * Interface WrapCallableInterface
+ * Interface CallableInterface
  * @package Pinoven\Dispatcher\Priority
  */
-interface WrapCallableInterface
+interface CallableInterface
 {
 
     /**

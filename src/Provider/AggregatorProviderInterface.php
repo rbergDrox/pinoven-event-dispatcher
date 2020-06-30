@@ -15,16 +15,16 @@ interface AggregatorProviderInterface extends PsrListenerProviderInterface
     /**
      * Subscribe event/listeners mapper to aggregate.
      *
-     * @param ListenerEventTypeProviderInterface $provider
+     * @param EventListenersSubscriberInterface $provider
      * @return $this
      */
-    public function subscribeProvider(ListenerEventTypeProviderInterface $provider): self;
+    public function subscribe(EventListenersSubscriberInterface $provider): self;
 
     /**
      * Unsubscribe event/listeners mapper from aggregator.
      *
-     * @param ListenerEventTypeProviderInterface $provider
+     * @param EventListenersSubscriberInterface $provider
      * @return $this
      */
-    public function unsubscribeProvider(ListenerEventTypeProviderInterface $provider): self;
+    public function unsubscribe(EventListenersSubscriberInterface $provider): self;
 }

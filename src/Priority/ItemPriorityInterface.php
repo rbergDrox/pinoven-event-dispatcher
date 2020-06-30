@@ -3,8 +3,6 @@
 
 namespace Pinoven\Dispatcher\Priority;
 
-use Psr\EventDispatcher\ListenerProviderInterface;
-
 interface ItemPriorityInterface
 {
 

@@ -4,10 +4,10 @@
 namespace Pinoven\Dispatcher\Priority;
 
 /**
- * Class ItemCallablePriority
+ * Class CallableItemPriority
  * @package Pinoven\Dispatcher\Priority
  */
-class WrapCallablePriority implements ItemPriorityInterface, WrapCallableInterface
+class CallableItemPriority implements ItemPriorityInterface, CallableInterface
 {
     protected $priority = 0;
 

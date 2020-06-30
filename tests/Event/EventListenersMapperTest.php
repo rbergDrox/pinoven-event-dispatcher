@@ -6,12 +6,17 @@ namespace Pinoven\Dispatcher\Event;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container;
-use Pinoven\Dispatcher\Listener\ProxyListenersMapper;
+use Pinoven\Dispatcher\Listener\ProxyListeners;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSample;
 use Pinoven\Dispatcher\Samples\EventSampleA;
 use Pinoven\Dispatcher\Samples\ListenerSampleA;
 
-class EventMapperProviderTest extends TestCase
+/**
+ * Class EventListenersMapperTest
+ * @package Pinoven\Dispatcher\Event
+ *
+ */
+class EventListenersMapperTest extends TestCase
 {
 
     /**
@@ -25,7 +30,7 @@ class EventMapperProviderTest extends TestCase
             'eventListenerInvoked' =>  new ListenerSampleA(),
             ListenerSampleA::class => new ListenerSampleA()
         ]));
-        $proxy = new ProxyListenersMapper($container);
+        $proxy = new ProxyListeners($container);
         $this->eventMapperProvider = new EventMapperProviderSample($proxy);
     }
 

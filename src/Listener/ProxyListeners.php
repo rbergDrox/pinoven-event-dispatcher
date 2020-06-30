@@ -6,17 +6,17 @@ namespace Pinoven\Dispatcher\Listener;
 use Closure;
 use Fig\EventDispatcher\ParameterDeriverTrait;
 use Pinoven\Dispatcher\Priority\ItemPriorityInterface;
-use Pinoven\Dispatcher\Priority\WrapCallableFactoryInterface;
+use Pinoven\Dispatcher\Priority\CallableItemPriorityInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
 
 /**
- * Class ProxyListenersMapper
+ * Class ProxyListeners
  * @package Pinoven\Dispatcher\Listener
  */
-class ProxyListenersMapper implements ProxyListenerWithContainer
+class ProxyListeners implements ProxyListener, ProxyListenerHasContainer
 {
     use ParameterDeriverTrait;
 
@@ -26,18 +26,18 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
     protected $container;
 
     /**
-     * @var WrapCallableFactoryInterface|null
+     * @var CallableItemPriorityInterface|null
      */
     private $wrapCallableFactory;
 
     /**
      * ProxyListenersMapper constructor.
      * @param ContainerInterface|null $container
-     * @param WrapCallableFactoryInterface|null $wrapCallableFactory
+     * @param CallableItemPriorityInterface|null $wrapCallableFactory
      */
     public function __construct(
         ?ContainerInterface $container = null,
-        ?WrapCallableFactoryInterface $wrapCallableFactory = null
+        ?CallableItemPriorityInterface $wrapCallableFactory = null
     ) {
         $this->container = $container;
         $this->wrapCallableFactory = $wrapCallableFactory;
@@ -46,10 +46,9 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
     /**
      * @inheritDoc
      */
-    public function setContainer(ContainerInterface $container): ProxyListener
+    public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;
-        return $this;
     }
 
     /**
@@ -67,7 +66,7 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
             $type = $this->getParameterType($callable);
             if ($type == $eventType) {
                 if ($this->wrapCallableFactory && !($callable instanceof ItemPriorityInterface)) {
-                    $callable = $this->wrapCallableFactory->createWrapCallablePriority($callable);
+                    $callable = $this->wrapCallableFactory->wrap($callable);
                 }
                 yield $callable;
             }
@@ -84,18 +83,48 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
             return $listener;
         }
         $itemCallable = $this->retrieveFromContainer($listener, $tag);
-        if ($itemCallable) {
-            return $itemCallable;
+        return $itemCallable? : $this->retrieveFromClass($listener, $tag);
+    }
+
+    /**
+     * Retrieve/Construct callable from class to use with static method.
+     *
+     * @param string $listener
+     * @param string $tag
+     * @return callable|null
+     * @throws ReflectionException
+     */
+    protected function retrieveClassWithStaticMethod(string $listener, string $tag): ?callable
+    {
+        $reflection = class_exists($listener) ? new ReflectionClass($listener) : null;
+        if ($reflection && $reflection->hasMethod($tag) && $reflection->getMethod($tag)->isStatic()) {
+            return [$listener, $tag];
         }
-        $classCallable = $this->retrieveFromClass($listener, $tag);
-        if ($classCallable) {
-            return $classCallable;
-        }
+            //todo: constructor has no parameters can be instantiated.
+            //todo: manage __invoke. dependency with above issue.
         return null;
     }
 
     /**
-     * Retrieve/Construct callable from class to use with static or public method.
+     * Retrieve/Construct callable from class to use with  public method.
+     *
+     * @param object $listener
+     * @param string $tag
+     * @return callable|null
+     * @throws ReflectionException
+     */
+    protected function retrieveFromClassWithPublicMethod(object $listener, string $tag): ?callable
+    {
+        $callable = null;
+        $reflection =  new ReflectionObject($listener);
+        if ($reflection->hasMethod($tag) && $reflection->getMethod($tag)->isPublic()) {
+            $callable = [$listener, $tag];
+        }
+        return $callable;
+    }
+
+    /**
+     * Retrieve/Construct callable from class to use with static method.
      *
      * @param $listener
      * @param string $tag
@@ -104,19 +133,11 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
      */
     protected function retrieveFromClass($listener, string $tag): ?callable
     {
-        if (is_object($listener)) {
-            $reflectionClass = new ReflectionObject($listener);
-            if ($reflectionClass->hasMethod($tag) && $reflectionClass->getMethod($tag)->isPublic()) {
-                return [$listener, $tag];
-            }
+        if (is_object($listener) && $callableObject = $this->retrieveFromClassWithPublicMethod($listener, $tag)) {
+            return $callableObject;
         }
-        if (is_string($listener) && class_exists($listener)) {
-            $reflectionClass = new ReflectionClass($listener);
-            if ($reflectionClass->hasMethod($tag) && $reflectionClass->getMethod($tag)->isStatic()) {
-                return [$listener, $tag];
-            }
-            //todo: constructor has no parameters can be instantiated.
-            //todo: manage __invoke. dependency with above issue.
+        if (is_string($listener)  && $CallableClass = $this->retrieveClassWithStaticMethod($listener, $tag)) {
+            return $CallableClass;
         }
         return null;
     }
@@ -126,18 +147,15 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
      */
     public function retrieveFromContainer($listener, string $tag): ?callable
     {
-        if (!$this->container || !is_string($listener) || !$this->container->has($listener)) {
-            return null;
+        $item = null;
+        if ($this->container && is_string($listener) && $this->container->has($listener)) {
+            $item = $this->container->get($listener);
         }
-        $item = $this->container->get($listener);
-
-        if (is_callable($item) && (!is_array($item) || (is_array($item) && $item[1] == $tag))) {
+        if (!is_callable($item) && is_object($item)) {
+            return $this->createCallableFromObject($item, $tag);
+        } elseif (is_callable($item)) {
             return $item;
         }
-        if (is_object($item)) {
-            return $this->createCallableFromObject($item, $tag);
-        }
-
         //todo: constructor has parameters can they be instantiated?
         return null;
     }
@@ -148,16 +166,14 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
      * @param string $tag
      * @return array
      * @throws ReflectionException
-     * @see ProxyListenersMapper::retrieveFromContainer();
+     * @see ProxyListeners::retrieveFromContainer();
      *
      */
     protected function createCallableFromObject(object $item, string $tag): ?callable
     {
-        if ($reflectionItem = new ReflectionObject($item)) {
-            $method = $reflectionItem->hasMethod($tag) ? $reflectionItem->getMethod($tag) : null;
-            if ($method && $method->isPublic()) {
-                return [$item, $tag];
-            }
+        $reflectionItem = new ReflectionObject($item);
+        if ($reflectionItem->hasMethod($tag) && $reflectionItem->getMethod($tag)->isPublic()) {
+            return [$item, $tag];
         }
         return null;
     }

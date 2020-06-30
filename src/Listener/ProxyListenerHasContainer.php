@@ -9,10 +9,10 @@ use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 
 /**
- * Interface ProxyListenerWithContainer
+ * Interface ProxyListenerHasContainer
  * @package Pinoven\Dispatcher\Listener
  */
-interface ProxyListenerWithContainer extends ProxyListener
+interface ProxyListenerHasContainer
 {
     /**
      * Declare PSR-11 container. It should be use to retrieve callable or any instance to use as a listener.
@@ -20,9 +20,9 @@ interface ProxyListenerWithContainer extends ProxyListener
      * @see https://github.com/container-interop/fig-standards/blob/master/proposed/container.md
      *
      * @param ContainerInterface $container
-     * @return $this
+     * @return void
      */
-    public function setContainer(ContainerInterface $container): ProxyListener;
+    public function setContainer(ContainerInterface $container): void;
 
     /**
      * Retrieve/Construct callable from PSR-11 container.
