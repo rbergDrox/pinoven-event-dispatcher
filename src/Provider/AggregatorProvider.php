@@ -35,7 +35,7 @@ class AggregatorProvider extends FigAggregatorProvider implements AggregatorProv
     /**
      * @inheritDoc
      */
-    public function subscribeProvider(ListenerEventTypeProviderInterface $provider): AggregatorProviderInterface
+    public function subscribe(EventListenersSubscriberInterface $provider): AggregatorProviderInterface
     {
         return $this->addProvider($provider);
     }
@@ -43,7 +43,7 @@ class AggregatorProvider extends FigAggregatorProvider implements AggregatorProv
     /**
      * @inheritDoc
      */
-    public function unsubscribeProvider(ListenerEventTypeProviderInterface $provider): AggregatorProviderInterface
+    public function unsubscribe(EventListenersSubscriberInterface $provider): AggregatorProviderInterface
     {
         if (($key = array_search($provider, $this->providers)) !== false) {
             unset($this->providers[$key]);

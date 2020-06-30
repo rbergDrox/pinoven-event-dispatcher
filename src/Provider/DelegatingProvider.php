@@ -13,7 +13,9 @@ use Psr\EventDispatcher\ListenerProviderInterface;
  * Class DelegatingProvider
  * @package Pinoven\Dispatcher\Provider
  */
-class DelegatingProvider extends FigDelegatingProvider implements ListenerEventTypeProviderInterface, ItemPriorityInterface
+class DelegatingProvider extends FigDelegatingProvider implements
+    EventListenersSubscriberInterface,
+    ItemPriorityInterface
 {
     /**
      * @var PrioritizeInterface|null
@@ -49,7 +51,7 @@ class DelegatingProvider extends FigDelegatingProvider implements ListenerEventT
     /**
      * @inheritDoc
      */
-    public function subscribe(EventListenersMapperInterface $provider): ListenerEventTypeProviderInterface
+    public function subscribe(EventListenersMapperInterface $provider): EventListenersSubscriberInterface
     {
         return $this->addProvider($provider, [$provider->getEventType()]);
     }
@@ -57,7 +59,7 @@ class DelegatingProvider extends FigDelegatingProvider implements ListenerEventT
     /**
      * @inheritDoc
      */
-    public function unsubscribe(EventListenersMapperInterface $provider): ListenerEventTypeProviderInterface
+    public function unsubscribe(EventListenersMapperInterface $provider): EventListenersSubscriberInterface
     {
         if (($key = array_search($provider, $this->providers[$provider->getEventType()])) !== false) {
             unset($this->providers[$provider->getEventType()][$key]);

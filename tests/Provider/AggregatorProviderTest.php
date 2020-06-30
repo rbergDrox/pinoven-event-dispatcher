@@ -6,11 +6,11 @@ namespace Pinoven\Dispatcher\Provider;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container;
-use Pinoven\Dispatcher\Listener\ProxyListenersMapper;
-use Pinoven\Dispatcher\Priority\PrioritizeProvider;
+use Pinoven\Dispatcher\Listener\ProxyListeners;
+use Pinoven\Dispatcher\Priority\Prioritize;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleB;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleC;
-use Pinoven\Dispatcher\Samples\EventMapperProviderSampleDefault;
+use Pinoven\Dispatcher\Samples\EventListenersMapperSampleDefault;
 use Pinoven\Dispatcher\Samples\EventSampleA;
 use Pinoven\Dispatcher\Samples\EventSampleB;
 use Pinoven\Dispatcher\Samples\ListenerSampleA;
@@ -36,7 +36,7 @@ class AggregatorProviderTest extends TestCase
     private $providerAggregator;
 
     /**
-     * @var ProxyListenersMapper
+     * @var ProxyListeners
      */
     private $proxy;
 
@@ -51,10 +51,10 @@ class AggregatorProviderTest extends TestCase
             },
             ListenerSampleA::class => new ListenerSampleA()
         ]));
-        $this->proxy = new ProxyListenersMapper($container);
+        $this->proxy = new ProxyListeners($container);
         $eventMapperProviderB = new EventMapperProviderSampleB($this->proxy);
         $eventMapperProviderC = new EventMapperProviderSampleC($this->proxy);
-        $eventMapperDefault = new EventMapperProviderSampleDefault($this->proxy);
+        $eventMapperDefault = new EventListenersMapperSampleDefault($this->proxy);
         $this->delegatingProviderA = new DelegatingProvider($eventMapperDefault);
         $this->delegatingProviderA->subscribe($eventMapperProviderB);
         $this->delegatingProviderB = new DelegatingProvider($eventMapperDefault);
@@ -66,12 +66,12 @@ class AggregatorProviderTest extends TestCase
     public function testSubscribeProvider()
     {
         $eventA = new EventSampleA();
-        $this->providerAggregator->subscribeProvider($this->delegatingProviderA);
+        $this->providerAggregator->subscribe($this->delegatingProviderA);
         /** @var \Traversable $listenersBefore */
         $listenersBefore = $this->providerAggregator->getListenersForEvent($eventA);
         $this->assertEquals(3, iterator_count($listenersBefore));
 
-        $this->providerAggregator->subscribeProvider($this->delegatingProviderB);
+        $this->providerAggregator->subscribe($this->delegatingProviderB);
         /** @var \Traversable $listenersAfter */
         $listenersAfter = $this->providerAggregator->getListenersForEvent($eventA);
         $this->assertEquals(5, iterator_count($listenersAfter));
@@ -80,11 +80,11 @@ class AggregatorProviderTest extends TestCase
     public function testUnsubscribeProvider()
     {
         $eventA = new EventSampleA();
-        $this->providerAggregator->subscribeProvider($this->delegatingProviderB);
+        $this->providerAggregator->subscribe($this->delegatingProviderB);
         /** @var \Traversable $listenersBefore */
         $listenersBefore = $this->providerAggregator->getListenersForEvent($eventA);
         $this->assertEquals(2, iterator_count($listenersBefore));
-        $this->providerAggregator->unsubscribeProvider($this->delegatingProviderB);
+        $this->providerAggregator->unsubscribe($this->delegatingProviderB);
         /** @var \Traversable $listenersAfter */
         $listenersAfter = $this->providerAggregator->getListenersForEvent($eventA);
         $this->assertEquals(0, iterator_count($listenersAfter));
@@ -93,7 +93,7 @@ class AggregatorProviderTest extends TestCase
     public function testProviderWithPriority()
     {
         $eventA= new EventSampleA();
-        $mapper1 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper1 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleA::class;
@@ -111,7 +111,7 @@ class AggregatorProviderTest extends TestCase
                 ];
             }
         };
-        $mapper2 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper2 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleA::class;
@@ -129,7 +129,7 @@ class AggregatorProviderTest extends TestCase
                 ];
             }
         };
-        $mapper3 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper3 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleA::class;
@@ -147,7 +147,7 @@ class AggregatorProviderTest extends TestCase
                 ];
             }
         };
-        $mapper4 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper4 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleA::class;
@@ -173,10 +173,10 @@ class AggregatorProviderTest extends TestCase
         $delegatingProvider2->subscribe($mapper3);
         $delegatingProvider2->subscribe($mapper4);
         $delegatingProvider2->setPriority(9);
-        $prioritize = new PrioritizeProvider();
+        $prioritize = new Prioritize();
         $providerAggregator = new AggregatorProvider($prioritize);
-        $providerAggregator->subscribeProvider($delegatingProvider);
-        $providerAggregator->subscribeProvider($delegatingProvider2);
+        $providerAggregator->subscribe($delegatingProvider);
+        $providerAggregator->subscribe($delegatingProvider2);
         /** @var \Traversable $listenersGen */
         $listenerItems = $providerAggregator->getListenersForEvent($eventA);
         /** @var ListenerSampleB[] $items */
@@ -193,7 +193,7 @@ class AggregatorProviderTest extends TestCase
     public function testProviderListenersWithPriority()
     {
         $eventB = new EventSampleB();
-        $mapper1 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper1 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleB::class;
@@ -208,7 +208,7 @@ class AggregatorProviderTest extends TestCase
                 ];
             }
         };
-        $mapper2 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper2 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleB::class;
@@ -227,7 +227,7 @@ class AggregatorProviderTest extends TestCase
                 ];
             }
         };
-        $mapper3 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper3 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleB::class;
@@ -246,7 +246,7 @@ class AggregatorProviderTest extends TestCase
                 ];
             }
         };
-        $mapper4 = new class($this->proxy) extends EventMapperProviderSampleDefault{
+        $mapper4 = new class($this->proxy) extends EventListenersMapperSampleDefault{
             public function getEventType(): string
             {
                 return EventSampleB::class;
@@ -267,10 +267,10 @@ class AggregatorProviderTest extends TestCase
         $delegatingProvider->subscribe($mapper2);
         $delegatingProvider2->subscribe($mapper3);
         $delegatingProvider2->subscribe($mapper4);
-        $prioritize = new PrioritizeProvider();
+        $prioritize = new Prioritize();
         $providerAggregator = new AggregatorProvider($prioritize);
-        $providerAggregator->subscribeProvider($delegatingProvider);
-        $providerAggregator->subscribeProvider($delegatingProvider2);
+        $providerAggregator->subscribe($delegatingProvider);
+        $providerAggregator->subscribe($delegatingProvider2);
         /** @var \Traversable $listenersGen */
         $listenerItems = $providerAggregator->getListenersForEvent($eventB);
         /** @var ListenerSampleB[] $items */
@@ -285,8 +285,8 @@ class AggregatorProviderTest extends TestCase
         $this->assertEquals(5, $items[4]->level);
         $this->assertEquals(6, $items[5]->level);
         $providerAggregator1 = new AggregatorProvider($prioritize, true);
-        $providerAggregator1->subscribeProvider($delegatingProvider);
-        $providerAggregator1->subscribeProvider($delegatingProvider2);
+        $providerAggregator1->subscribe($delegatingProvider);
+        $providerAggregator1->subscribe($delegatingProvider2);
         /** @var \Traversable $listenersGen */
         $listenerItems = $providerAggregator1->getListenersForEvent($eventB);
         /** @var ListenerSampleB[] $items */
