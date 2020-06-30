@@ -8,10 +8,10 @@ use Pinoven\Dispatcher\Listener\ProxyListener;
 use Pinoven\Dispatcher\Priority\ItemPriorityInterface;
 
 /**
- * Class EventMapperProvider
+ * Class EventListenersMapper
  * @package Pinoven\Dispatcher\Event
  */
-abstract class EventMapperProvider implements EventListenersMapperInterface, ItemPriorityInterface
+abstract class EventListenersMapper implements EventListenersMapperInterface, ItemPriorityInterface
 {
     use TaggedProviderTrait;
 

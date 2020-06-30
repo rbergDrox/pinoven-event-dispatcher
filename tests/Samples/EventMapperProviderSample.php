@@ -3,7 +3,7 @@
 
 namespace Pinoven\Dispatcher\Samples;
 
-class EventMapperProviderSample extends EventMapperProviderSampleDefault
+class EventMapperProviderSample extends EventListenersMapperSampleDefault
 {
 
 }

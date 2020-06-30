@@ -3,8 +3,6 @@
 
 namespace Pinoven\Dispatcher\Priority;
 
-use Traversable;
-
 /**
  * Interface PrioritizeInterface
  * @package Pinoven\Dispatcher\Priority

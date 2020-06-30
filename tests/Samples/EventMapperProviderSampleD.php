@@ -3,7 +3,7 @@
 
 namespace Pinoven\Dispatcher\Samples;
 
-class EventMapperProviderSampleD extends EventMapperProviderSampleDefault
+class EventMapperProviderSampleD extends EventListenersMapperSampleDefault
 {
 
     protected $priority = 10;

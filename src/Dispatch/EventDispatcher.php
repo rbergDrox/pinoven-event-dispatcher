@@ -6,7 +6,6 @@ namespace Pinoven\Dispatcher\Dispatch;
 use Pinoven\Dispatcher\Provider\AggregatorProviderInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 
-
 /**
  * Class EventDispatcher
  * @package Pinoven\Dispatcher\Dispatch

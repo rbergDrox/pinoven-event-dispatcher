@@ -6,17 +6,17 @@ namespace Pinoven\Dispatcher\Listener;
 use Closure;
 use Fig\EventDispatcher\ParameterDeriverTrait;
 use Pinoven\Dispatcher\Priority\ItemPriorityInterface;
-use Pinoven\Dispatcher\Priority\WrapCallableFactoryInterface;
+use Pinoven\Dispatcher\Priority\CallableItemPriorityInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
 
 /**
- * Class ProxyListenersMapper
+ * Class ProxyListeners
  * @package Pinoven\Dispatcher\Listener
  */
-class ProxyListenersMapper implements ProxyListenerWithContainer
+class ProxyListeners implements ProxyListener, ProxyListenerHasContainer
 {
     use ParameterDeriverTrait;
 
@@ -26,18 +26,18 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
     protected $container;
 
     /**
-     * @var WrapCallableFactoryInterface|null
+     * @var CallableItemPriorityInterface|null
      */
     private $wrapCallableFactory;
 
     /**
      * ProxyListenersMapper constructor.
      * @param ContainerInterface|null $container
-     * @param WrapCallableFactoryInterface|null $wrapCallableFactory
+     * @param CallableItemPriorityInterface|null $wrapCallableFactory
      */
     public function __construct(
         ?ContainerInterface $container = null,
-        ?WrapCallableFactoryInterface $wrapCallableFactory = null
+        ?CallableItemPriorityInterface $wrapCallableFactory = null
     ) {
         $this->container = $container;
         $this->wrapCallableFactory = $wrapCallableFactory;
@@ -46,10 +46,9 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
     /**
      * @inheritDoc
      */
-    public function setContainer(ContainerInterface $container): ProxyListener
+    public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;
-        return $this;
     }
 
     /**
@@ -67,7 +66,7 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
             $type = $this->getParameterType($callable);
             if ($type == $eventType) {
                 if ($this->wrapCallableFactory && !($callable instanceof ItemPriorityInterface)) {
-                    $callable = $this->wrapCallableFactory->createWrapCallablePriority($callable);
+                    $callable = $this->wrapCallableFactory->wrap($callable);
                 }
                 yield $callable;
             }
@@ -148,7 +147,7 @@ class ProxyListenersMapper implements ProxyListenerWithContainer
      * @param string $tag
      * @return array
      * @throws ReflectionException
-     * @see ProxyListenersMapper::retrieveFromContainer();
+     * @see ProxyListeners::retrieveFromContainer();
      *
      */
     protected function createCallableFromObject(object $item, string $tag): ?callable

@@ -6,11 +6,11 @@ namespace Pinoven\Dispatcher\Priority;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container;
-use Pinoven\Dispatcher\Listener\ProxyListenersMapper;
+use Pinoven\Dispatcher\Listener\ProxyListeners;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSample;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleB;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleC;
-use Pinoven\Dispatcher\Samples\EventMapperProviderSampleDefault;
+use Pinoven\Dispatcher\Samples\EventListenersMapperSampleDefault;
 use Pinoven\Dispatcher\Samples\EventMapperProviderSampleE;
 use Pinoven\Dispatcher\Samples\EventSampleA;
 use Pinoven\Dispatcher\Samples\ListenerSampleA;
@@ -19,7 +19,7 @@ use Pinoven\Dispatcher\Samples\ListenerSampleA;
  * Class PrioritizeTest
  * @package Pinoven\Dispatcher\Priority
  */
-class PrioritizeProviderTest extends TestCase
+class PrioritizeTest extends TestCase
 {
 
     public function testSortItems()
@@ -32,9 +32,9 @@ class PrioritizeProviderTest extends TestCase
             },
             ListenerSampleA::class => new ListenerSampleA()
         ]));
-        $proxy = new ProxyListenersMapper($container);
+        $proxy = new ProxyListeners($container);
         $providers = [
-            new EventMapperProviderSampleDefault($proxy),//0
+            new EventListenersMapperSampleDefault($proxy),//0
             new EventMapperProviderSampleB($proxy),//10
             new EventMapperProviderSampleC($proxy),//-2
             new EventMapperProviderSample($proxy),//0
@@ -53,14 +53,14 @@ class PrioritizeProviderTest extends TestCase
             });
         };
         $classList = $provideClasses($providers);
-        $prioritizeProvider = new PrioritizeProvider();
+        $prioritizeProvider = new Prioritize();
         $sortedProviders= $prioritizeProvider->sortItems($providers);
         $sortedClassList = $provideClasses($sortedProviders);
         $this->assertFalse($sortedClassList === $classList);
         $this->assertEquals([
             EventMapperProviderSampleB::class,
             EventMapperProviderSampleE::class,
-            EventMapperProviderSampleDefault::class,
+            EventListenersMapperSampleDefault::class,
             EventMapperProviderSample::class,
             EventMapperProviderSampleC::class,
         ], $sortedClassList);
@@ -106,7 +106,7 @@ class PrioritizeProviderTest extends TestCase
             yield from $items;
         };
         $listeners = $iteratorCallable([$item1, $item2]);
-        $prioritizeProvider = new PrioritizeProvider();
+        $prioritizeProvider = new Prioritize();
         $sortedListeners = $prioritizeProvider->sortItems($listeners);
         $this->assertEquals(1, $sortedListeners[0]->test);
         $this->assertEquals(2, $sortedListeners[1]->test);

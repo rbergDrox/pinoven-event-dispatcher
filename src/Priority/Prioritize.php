@@ -6,10 +6,10 @@ namespace Pinoven\Dispatcher\Priority;
 use Traversable;
 
 /**
- * Class PrioritizeProvider
+ * Class Prioritize
  * @package Pinoven\Dispatcher\Priority
  */
-class PrioritizeProvider implements PrioritizeInterface
+class Prioritize implements PrioritizeInterface
 {
 
     /**

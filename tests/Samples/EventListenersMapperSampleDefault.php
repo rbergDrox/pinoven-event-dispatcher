@@ -3,9 +3,9 @@
 
 namespace Pinoven\Dispatcher\Samples;
 
-use Pinoven\Dispatcher\Event\EventMapperProvider;
+use Pinoven\Dispatcher\Event\EventListenersMapper;
 
-class EventMapperProviderSampleDefault extends EventMapperProvider
+class EventListenersMapperSampleDefault extends EventListenersMapper
 {
     public function getEventType(): string
     {
