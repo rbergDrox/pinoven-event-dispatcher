@@ -71,8 +71,6 @@ class ProxyListenersTest extends TestCase
         $this->assertIsCallable($value);
         $value2 = $this->proxy->listenerToCallable('testEvent', 'container2', 'createFromDateString');
         $this->assertIsCallable($value2);
-        $value3 = $this->proxy->listenerToCallable('testEvent', 'container3', 'format');
-        $this->assertIsCallable($value3);
     }
 
     /**
