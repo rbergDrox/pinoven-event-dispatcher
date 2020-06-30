@@ -112,7 +112,6 @@ CallableItemPriorityInterface::class;;
 ```
 - Deal with a payload.
 - Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.
-- Attach Listener.
 - Implement Logger
 - Implement Container
 - Implement CacheInterface
