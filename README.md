@@ -104,12 +104,6 @@ CallableItemPriorityInterface::class;;
 
 
 # Todo
-- Event doesn't provide the "tag" method the default one have to be Event::tag() tag to match the default value there and fill use the default method "handler":
-```php
-    use Pinoven\Dispatcher\Event\EventListenersMapper;
-    EventListenersMapper::DEFAULT_TAG_METHOD;
-    EventListenersMapper::DEFAULT_TAG;
-```
 - Deal with a payload.
 - Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.
 - Implement Logger
