@@ -10,12 +10,12 @@ use Pinoven\Dispatcher\Samples\EventSampleA;
  * Class EmittedEventTest
  * @package Pinoven\Dispatcher\Event
  */
-class EmittedEventTest extends TestCase
+class EventTest extends TestCase
 {
     public function testEventWithTagMethod()
     {
         $event =  new EventSampleA();
-        $emittedEvent = new EmittedEvent($event);
+        $emittedEvent = new Event($event);
         $this->assertEquals($event->tag(), $emittedEvent->tag());
     }
 
@@ -23,7 +23,7 @@ class EmittedEventTest extends TestCase
     {
         $event =  new class{
         };
-        $emittedEvent = new EmittedEvent($event);
+        $emittedEvent = new Event($event);
         $this->assertEquals(EventListenersMapper::DEFAULT_TAG, $emittedEvent->tag());
     }
 }
