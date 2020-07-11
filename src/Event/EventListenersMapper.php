@@ -71,7 +71,10 @@ abstract class EventListenersMapper implements EventListenersMapperInterface, It
      */
     protected function eventType(): string
     {
-        return $this->getEventType();
+        if (class_exists($this->getEventType())) {
+            return $this->getEventType();
+        }
+        return EventHasTypeInterface::class;
     }
 
     /**
@@ -129,4 +132,16 @@ abstract class EventListenersMapper implements EventListenersMapperInterface, It
         $this->priority = $priority;
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function filterListenersForEvent(object $event, iterable $listenerSet) : iterable
+    {
+        foreach ($listenerSet as $type => $listeners) {
+            if (($event instanceof $type)
+                || (($event instanceof EventHasTypeInterface) && ($event->eventType() == $type))) {
+                yield from $listeners;
+            }
+        }
+    }
 }

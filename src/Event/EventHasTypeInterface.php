@@ -11,7 +11,7 @@ interface EventHasTypeInterface
 {
 
     /**
-     * Returns the class or interface type this provider is for.
+     * Returns the class or interface type this event is for.
      * @return string
      */
     public function eventType(): string;

@@ -30,7 +30,7 @@ class EventEmitter implements EventEmitterInterface
     public function emit($event): object
     {
         if (is_string($event)) {
-            $event = $this->generateEventFromString($event);
+            $event = $this->generateCustomEventFromString($event);
         }
 
         $reflection = new ReflectionObject($event);
@@ -43,47 +43,14 @@ class EventEmitter implements EventEmitterInterface
     }
 
     /**
-     * Generate anonymous event from string.
+     * Generate a custom event from string.
      *
      * @param string $event
-     * @return EventHasTypeInterface
+     * @return EventInterface|EventHasTypeInterface
      *
      */
-    protected function generateEventFromString(string $event)
+    protected function generateCustomEventFromString(string $event): object
     {
-        return new class($event) implements EventInterface, EventHasTypeInterface {
-            /**
-             * @var string
-             */
-            private $event;
-
-            public function __construct(string $event)
-            {
-                $this->event = $event;
-            }
-
-            /**
-             * @inheritDoc
-             */
-            public function eventType(): string
-            {
-                return $this->event;
-            }
-
-            /**
-             * @inheritDoc
-             */
-            public function tag(): string
-            {
-                return lcfirst(
-                    str_replace(
-                        ' ',
-                        '',
-                        ucwords(preg_replace('/[^a-zA-Z0-9]/', ' ', $this->event))
-                    )
-                    . 'Handler'
-                );
-            }
-        };
+        return new CustomEvent($event);
     }
 }

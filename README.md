@@ -58,6 +58,15 @@ It helps to declare the event type and related listeners.
 use Pinoven\Dispatcher\Event\EventListenersMapper;
 EventListenersMapper::class;
 ```
+## Emit Event
+
+```php
+use Pinoven\Dispatcher\Event\EventEmitter;
+EventEmitter::class;
+```
+
+Emitter event permit to use the dispatcher and send a custom event too by using string and payload.
+
 
 ## Order/Prioritize
 
@@ -105,15 +114,13 @@ CallableItemPriorityInterface::class;;
 
 # Todo
 - Deal with a payload.
-- Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.
+- Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.??
 - Implement Logger
 - Implement Container
 - Implement CacheInterface
-- Send Specific Event by string. These events are not classes. Something like `dispatch('dispatcher.instantiated', $values);`.
 - Attach/detach Listener ?
 - Implement  own Collection/Generator
 - Clean Sample
-- Document implementation of prioritizing in Aggregator, Delegate, Event mapper
 
 # Contribution
  - Create issue: improvement + the reason why it should be implemented or issue + how to reproduce.
