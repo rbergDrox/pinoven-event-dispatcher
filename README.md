@@ -108,7 +108,7 @@ CallableInterface::class;
 You may need to do some stuff on the wrapper, so you can use the factory to transformer your listener/callable to wrapper item.
 ```php
 use Pinoven\Dispatcher\Priority\CallableItemPriorityInterface;
-CallableItemPriorityInterface::class;;
+CallableItemPriorityInterface::class;
 ```
 
 
