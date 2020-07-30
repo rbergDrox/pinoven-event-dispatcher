@@ -27,17 +27,17 @@ class EventEmitter implements EventEmitterInterface
     /**
      * @inheritDoc
      */
-    public function emit($event): object
+    public function emit($event, ...$payload): object
     {
         if (is_string($event)) {
-            $event = $this->generateCustomEventFromString($event);
+            $event = $this->generateCustomEventFromString($event, $payload);
         }
 
         $reflection = new ReflectionObject($event);
         $wrappedIt = $reflection->hasMethod(EventListenersMapper::DEFAULT_TAG_METHOD)
             || ($event instanceof EventInterface);
         if (!$wrappedIt) {
-            $event = new Event($event);
+            $event = new Event($event, $payload);
         }
         return $this->eventDispatcher->dispatch($event);
     }
@@ -46,11 +46,11 @@ class EventEmitter implements EventEmitterInterface
      * Generate a custom event from string.
      *
      * @param string $event
+     * @param array $payload
      * @return EventInterface|EventHasTypeInterface
-     *
      */
-    protected function generateCustomEventFromString(string $event): object
+    protected function generateCustomEventFromString(string $event, ...$payload): object
     {
-        return new CustomEvent($event);
+        return new CustomEvent($event, $payload);
     }
 }

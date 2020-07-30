@@ -113,7 +113,6 @@ CallableItemPriorityInterface::class;
 
 
 # Todo
-- Deal with a payload.
 - Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.??
 - Implement Logger
 - Implement Container

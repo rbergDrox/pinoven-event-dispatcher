@@ -14,7 +14,8 @@ interface EventEmitterInterface
     /**
      * Emit an event and return the event object.
      * @param string|object $event
+     * @param array $payload
      * @return object|EventInterface|EventHasTypeInterface
      */
-    public function emit($event): object;
+    public function emit($event, ...$payload): object;
 }

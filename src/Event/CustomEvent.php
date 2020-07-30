@@ -3,16 +3,22 @@
 
 namespace Pinoven\Dispatcher\Event;
 
-class CustomEvent implements EventInterface, EventHasTypeInterface
+class CustomEvent implements EventInterface, EventHasTypeInterface, EventHasPayloadInterface
 {
     /**
      * @var string
      */
     private $event;
 
-    public function __construct(string $event)
+    /**
+     * @var array
+     */
+    private $payload;
+
+    public function __construct(string $event, ...$payload)
     {
         $this->event = $event;
+        $this->payload = $payload;
     }
 
     /**
@@ -36,5 +42,13 @@ class CustomEvent implements EventInterface, EventHasTypeInterface
             )
             . 'Handler'
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPayload(): array
+    {
+        return $this->payload;
     }
 }

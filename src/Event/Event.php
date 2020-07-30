@@ -5,7 +5,7 @@ namespace Pinoven\Dispatcher\Event;
 
 use ReflectionObject;
 
-class Event implements EventInterface
+class Event implements EventInterface, EventHasPayloadInterface
 {
     /**
      * @var object
@@ -13,12 +13,19 @@ class Event implements EventInterface
     private $originEvent;
 
     /**
+     * @var array
+     */
+    private $payload;
+
+    /**
      * EmittedEvent constructor.
      * @param object $originEvent
+     * @param array $payload
      */
-    public function __construct(object $originEvent)
+    public function __construct(object $originEvent, ...$payload)
     {
         $this->originEvent = $originEvent;
+        $this->payload = $payload;
     }
 
     /**
@@ -28,5 +35,21 @@ class Event implements EventInterface
     {
         $reflectionEvent =  new ReflectionObject($this->originEvent);
         return $reflectionEvent->hasMethod('tag') ? $this->originEvent->tag() : EventListenersMapper::DEFAULT_TAG;
+    }
+
+    /**
+     * @return object
+     */
+    public function getOriginEvent(): object
+    {
+        return $this->originEvent;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPayload(): array
+    {
+        return $this->payload;
     }
 }

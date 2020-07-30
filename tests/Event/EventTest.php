@@ -12,6 +12,15 @@ use Pinoven\Dispatcher\Samples\EventSampleA;
  */
 class EventTest extends TestCase
 {
+
+    public function testOriginEventAndPayloadValue()
+    {
+        $event =  new EventSampleA();
+        $emittedEvent = new Event($event, 22, array(11, 22));
+        $this->assertEquals([22, [11, 22]], $emittedEvent->getPayload());
+        $this->assertEquals($event, $emittedEvent->getOriginEvent());
+    }
+
     public function testEventWithTagMethod()
     {
         $event =  new EventSampleA();
