@@ -5,6 +5,7 @@ namespace Pinoven\Dispatcher\Listener;
 
 use Closure;
 use Fig\EventDispatcher\ParameterDeriverTrait;
+use Pinoven\Dispatcher\Event\EventHasTypeInterface;
 use Pinoven\Dispatcher\Priority\ItemPriorityInterface;
 use Pinoven\Dispatcher\Priority\CallableItemPriorityInterface;
 use Psr\Container\ContainerInterface;
@@ -64,7 +65,8 @@ class ProxyListeners implements ProxyListener, ProxyListenerHasContainer
                 continue;
             }
             $type = $this->getParameterType($callable);
-            if ($type == $eventType) {
+            $classReflection = new ReflectionClass($type);
+            if ($type == $eventType || $classReflection->implementsInterface(EventHasTypeInterface::class)) {
                 if ($this->wrapCallableFactory && !($callable instanceof ItemPriorityInterface)) {
                     $callable = $this->wrapCallableFactory->wrap($callable);
                 }
