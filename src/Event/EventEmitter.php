@@ -39,6 +39,7 @@ class EventEmitter implements EventEmitterInterface
         if (!$wrappedIt) {
             $event = new Event($event, $payload);
         }
+        // Check has no attribute payload and set it.
         return $this->eventDispatcher->dispatch($event);
     }
 

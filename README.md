@@ -113,6 +113,7 @@ CallableItemPriorityInterface::class;
 
 
 # Todo
+- merge payload if `public $payload`  or add data to existing payload
 - Automatic event hierarchy. It means by dealing with BeforeEvent, AfterEvent. Perhaps BetweenEvent.??
 - Implement Logger
 - Implement Container
